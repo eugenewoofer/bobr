@@ -4,7 +4,7 @@
     <p class="bobr-subtitle">Majestic. Industrious. Unstoppable.</p>
     <div class="bobr-card">
       <img
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Beaver_pho34.jpg/1280px-Beaver_pho34.jpg"
+        src="@/assets/bobr.jpg"
         alt="A majestic beaver (bobr)"
         class="bobr-image"
         loading="lazy"
