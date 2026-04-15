@@ -1,0 +1,20 @@
+npm warn exec The following package was not found and will be installed: serve@14.2.6
+ INFO  Accepting connections at http://localhost:8080
+ HTTP  15.04.2026 23:11:44 127.0.0.1 GET /bobr
+ HTTP  15.04.2026 23:11:44 127.0.0.1 Returned 200 in 15 ms
+ HTTP  15.04.2026 23:11:48 ::1 GET /bobr
+ HTTP  15.04.2026 23:11:48 ::1 Returned 200 in 2 ms
+ HTTP  15.04.2026 23:11:48 ::1 GET /assets/index-rd0cdFem.js
+ HTTP  15.04.2026 23:11:48 ::1 GET /assets/index-C9NQ_6K2.css
+ HTTP  15.04.2026 23:11:48 ::1 Returned 200 in 4 ms
+ HTTP  15.04.2026 23:11:48 ::1 Returned 200 in 5 ms
+ HTTP  15.04.2026 23:11:48 ::1 GET /assets/bobr-DEePSR1h.jpg
+ HTTP  15.04.2026 23:11:48 ::1 Returned 200 in 3 ms
+ HTTP  15.04.2026 23:14:54 ::1 GET /bobr
+ HTTP  15.04.2026 23:14:54 ::1 Returned 200 in 1 ms
+ HTTP  15.04.2026 23:14:54 ::1 GET /assets/index-cLIJH-w3.js
+ HTTP  15.04.2026 23:14:54 ::1 GET /assets/index-Bj-2WA8J.css
+ HTTP  15.04.2026 23:14:54 ::1 Returned 200 in 2 ms
+ HTTP  15.04.2026 23:14:54 ::1 Returned 200 in 3 ms
+ HTTP  15.04.2026 23:14:54 ::1 GET /assets/bobr-DEePSR1h.jpg
+ HTTP  15.04.2026 23:14:54 ::1 Returned 200 in 3 ms
