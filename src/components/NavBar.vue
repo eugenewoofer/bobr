@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar">
     <div class="nav-brand">
-      <span class="nav-logo">🦫</span>
+      <img class="nav-logo" src="@/assets/bobr-icon.svg" alt="Bobr" />
       <span class="nav-title">Bobr</span>
     </div>
     <div class="nav-links">
@@ -36,7 +36,8 @@ import { RouterLink } from 'vue-router'
 }
 
 .nav-logo {
-  font-size: 1.8rem;
+  width: 36px;
+  height: 36px;
 }
 
 .nav-title {
