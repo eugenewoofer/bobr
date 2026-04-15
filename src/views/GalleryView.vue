@@ -4,8 +4,8 @@
     <p class="page-sub">A collection of beaver scenes from around the world</p>
     <div class="gallery-grid">
       <div v-for="(item, i) in galleryItems" :key="i" class="gallery-card">
-        <div class="gallery-thumb" :style="{ background: item.bg }">
-          <span class="gallery-emoji" v-html="item.icon"></span>
+        <div class="gallery-thumb">
+          <img :src="item.img" :alt="item.title" class="gallery-img" />
         </div>
         <div class="gallery-info">
           <h3>{{ item.title }}</h3>
@@ -17,13 +17,20 @@
 </template>
 
 <script setup lang="ts">
+import damBuilder from '@/assets/gallery/dam-builder.jpg'
+import riverSwimmer from '@/assets/gallery/river-swimmer.jpg'
+import barkFeast from '@/assets/gallery/bark-feast.jpg'
+import lodge from '@/assets/gallery/lodge.jpg'
+import winterBeaver from '@/assets/gallery/winter-beaver.jpg'
+import beaverDusk from '@/assets/gallery/beaver-dusk.jpg'
+
 const galleryItems = [
-  { icon: '&#x1F9AB;', title: 'Dam Builder', desc: 'A beaver constructing its signature dam from branches and mud', bg: 'linear-gradient(135deg, #2d1f0e, #4a3520)' },
-  { icon: '&#x1F30A;', title: 'River Swimmer', desc: 'Gliding through calm waters with its flat tail steering', bg: 'linear-gradient(135deg, #0e2d3d, #1a4a5a)' },
-  { icon: '&#x1F33F;', title: 'Bark Feast', desc: 'Gnawing on fresh willow bark - a beaver favorite meal', bg: 'linear-gradient(135deg, #1a2d0e, #2d4a1a)' },
-  { icon: '&#x1F3E1;', title: 'Lodge Interior', desc: 'Inside the cozy lodge: mud walls, wood floor, dry and warm', bg: 'linear-gradient(135deg, #2d1a0e, #4a2d1a)' },
-  { icon: '&#x2744;&#xFE0F;', title: 'Winter Beaver', desc: 'Surviving under ice with a food cache of sunken branches', bg: 'linear-gradient(135deg, #1a2a3d, #2d4a6a)' },
-  { icon: '&#x1F31F;', title: 'Beaver at Dusk', desc: 'Most active at twilight - the golden hour of beaver activity', bg: 'linear-gradient(135deg, #3d2d0e, #6a4a1a)' },
+  { img: damBuilder, title: 'Dam Builder', desc: 'A beaver dam constructed from branches, mud and natural debris' },
+  { img: riverSwimmer, title: 'River Swimmer', desc: 'An American beaver gliding through calm waters' },
+  { img: barkFeast, title: 'Bark Feast', desc: 'A beaver enjoying a meal of fresh bark and branches' },
+  { img: lodge, title: 'Beaver Lodge', desc: 'The cozy beaver home made of sticks, mud and grass' },
+  { img: winterBeaver, title: 'Tree Cutter', desc: 'A beaver hard at work cutting down a tree with its powerful teeth' },
+  { img: beaverDusk, title: 'Beaver Family', desc: 'A family of beavers near their creek habitat' },
 ]
 </script>
 
@@ -43,8 +50,8 @@ const galleryItems = [
   transition: all 0.25s ease;
 }
 .gallery-card:hover { border-color: rgba(212,160,48,0.2); transform: translateY(-3px); }
-.gallery-thumb { height: 160px; display: flex; align-items: center; justify-content: center; }
-.gallery-emoji { font-size: 3.5rem; }
+.gallery-thumb { height: 200px; overflow: hidden; }
+.gallery-img { width: 100%; height: 100%; object-fit: cover; }
 .gallery-info { padding: 1rem 1.25rem 1.25rem; }
 .gallery-info h3 { font-size: 1.05rem; color: #D4A030; margin-bottom: 0.3rem; }
 .gallery-info p { font-size: 0.88rem; color: rgba(255,255,255,0.5); line-height: 1.45; }
@@ -54,8 +61,7 @@ const galleryItems = [
   .page-title { font-size: 1.6rem; }
   .page-sub { font-size: 0.9rem; margin-bottom: 1.5rem; }
   .gallery-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-  .gallery-thumb { height: 120px; }
-  .gallery-emoji { font-size: 2.5rem; }
+  .gallery-thumb { height: 140px; }
   .gallery-info { padding: 0.75rem 1rem; }
   .gallery-info h3 { font-size: 0.92rem; }
   .gallery-info p { font-size: 0.8rem; }

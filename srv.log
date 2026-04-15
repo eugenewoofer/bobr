@@ -1,49 +1,35 @@
  INFO  Accepting connections at http://localhost:4100
- HTTP  15.04.2026 23:26:01 192.168.2.1 GET /
- HTTP  15.04.2026 23:26:01 192.168.2.1 Returned 200 in 14 ms
- HTTP  15.04.2026 23:26:01 192.168.2.1 GET /assets/index-CtULI2Tr.js
- HTTP  15.04.2026 23:26:01 192.168.2.1 GET /assets/index-Dayb22TA.css
- HTTP  15.04.2026 23:26:01 192.168.2.1 Returned 200 in 3 ms
- HTTP  15.04.2026 23:26:01 192.168.2.1 Returned 200 in 5 ms
- HTTP  15.04.2026 23:26:05 127.0.0.1 GET /bobr
- HTTP  15.04.2026 23:26:05 127.0.0.1 Returned 200 in 1 ms
- HTTP  15.04.2026 23:26:08 192.168.2.1 GET /assets/bobr-DEePSR1h.jpg
- HTTP  15.04.2026 23:26:08 192.168.2.1 Returned 200 in 2 ms
- HTTP  15.04.2026 23:27:28 192.168.2.1 GET /assets/bobr-DEePSR1h.jpg
- HTTP  15.04.2026 23:27:28 192.168.2.1 Returned 304 in 1 ms
- HTTP  15.04.2026 23:27:49 192.168.2.1 GET /
- HTTP  15.04.2026 23:27:49 192.168.2.1 Returned 304 in 1 ms
- HTTP  15.04.2026 23:27:49 192.168.2.1 GET /assets/index-CtULI2Tr.js
- HTTP  15.04.2026 23:27:49 192.168.2.1 GET /assets/index-Dayb22TA.css
- HTTP  15.04.2026 23:27:49 192.168.2.1 Returned 304 in 1 ms
- HTTP  15.04.2026 23:27:49 192.168.2.1 Returned 304 in 1 ms
- HTTP  15.04.2026 23:30:05 192.168.2.1 GET /
- HTTP  15.04.2026 23:30:05 192.168.2.1 Returned 304 in 1 ms
- HTTP  15.04.2026 23:30:05 192.168.2.1 GET /assets/index-CtULI2Tr.js
- HTTP  15.04.2026 23:30:05 192.168.2.1 GET /assets/index-Dayb22TA.css
- HTTP  15.04.2026 23:30:05 192.168.2.1 Returned 304 in 1 ms
- HTTP  15.04.2026 23:30:05 192.168.2.1 Returned 304 in 1 ms
- HTTP  15.04.2026 23:30:06 192.168.2.1 GET /
- HTTP  15.04.2026 23:30:06 192.168.2.1 Returned 304 in 1 ms
- HTTP  15.04.2026 23:30:07 192.168.2.1 GET /assets/index-Dayb22TA.css
- HTTP  15.04.2026 23:30:07 192.168.2.1 GET /assets/index-CtULI2Tr.js
- HTTP  15.04.2026 23:30:07 192.168.2.1 Returned 304 in 1 ms
- HTTP  15.04.2026 23:30:07 192.168.2.1 Returned 304 in 1 ms
- HTTP  15.04.2026 23:30:13 192.168.2.1 GET /
- HTTP  15.04.2026 23:30:13 192.168.2.1 Returned 304 in 1 ms
- HTTP  15.04.2026 23:30:13 192.168.2.1 GET /assets/index-CtULI2Tr.js
- HTTP  15.04.2026 23:30:13 192.168.2.1 GET /assets/index-Dayb22TA.css
- HTTP  15.04.2026 23:30:13 192.168.2.1 Returned 304 in 1 ms
- HTTP  15.04.2026 23:30:13 192.168.2.1 Returned 304 in 1 ms
- HTTP  15.04.2026 23:30:30 192.168.2.1 GET /
- HTTP  15.04.2026 23:30:30 192.168.2.1 Returned 304 in 1 ms
- HTTP  15.04.2026 23:30:30 192.168.2.1 GET /assets/index-CtULI2Tr.js
- HTTP  15.04.2026 23:30:30 192.168.2.1 GET /assets/index-Dayb22TA.css
- HTTP  15.04.2026 23:30:30 192.168.2.1 Returned 304 in 1 ms
- HTTP  15.04.2026 23:30:30 192.168.2.1 Returned 304 in 1 ms
- HTTP  15.04.2026 23:30:40 192.168.2.1 GET /
- HTTP  15.04.2026 23:30:40 192.168.2.1 Returned 304 in 0 ms
- HTTP  15.04.2026 23:30:40 192.168.2.1 GET /assets/index-CtULI2Tr.js
- HTTP  15.04.2026 23:30:40 192.168.2.1 GET /assets/index-Dayb22TA.css
- HTTP  15.04.2026 23:30:40 192.168.2.1 Returned 304 in 1 ms
- HTTP  15.04.2026 23:30:40 192.168.2.1 Returned 304 in 1 ms
+ HTTP  15.04.2026 23:46:42 192.168.2.1 GET /
+ HTTP  15.04.2026 23:46:42 192.168.2.1 Returned 200 in 14 ms
+ HTTP  15.04.2026 23:46:42 192.168.2.1 GET /assets/index-BbZ66_IF.js
+ HTTP  15.04.2026 23:46:42 192.168.2.1 GET /assets/index-VL-7b9nB.css
+ HTTP  15.04.2026 23:46:42 192.168.2.1 Returned 200 in 3 ms
+ HTTP  15.04.2026 23:46:42 192.168.2.1 Returned 200 in 4 ms
+ HTTP  15.04.2026 23:46:43 192.168.2.1 GET /assets/bobr-DEePSR1h.jpg
+ HTTP  15.04.2026 23:46:43 192.168.2.1 Returned 304 in 2 ms
+ HTTP  15.04.2026 23:46:55 ::1 GET /
+ HTTP  15.04.2026 23:46:55 ::1 Returned 200 in 1 ms
+ HTTP  15.04.2026 23:46:55 ::1 GET /assets/index-BbZ66_IF.js
+ HTTP  15.04.2026 23:46:55 ::1 GET /assets/index-VL-7b9nB.css
+ HTTP  15.04.2026 23:46:55 ::1 Returned 200 in 2 ms
+ HTTP  15.04.2026 23:46:55 ::1 Returned 200 in 1 ms
+ HTTP  15.04.2026 23:47:00 ::1 GET /bobr
+ HTTP  15.04.2026 23:47:00 ::1 Returned 200 in 0 ms
+ HTTP  15.04.2026 23:47:00 ::1 GET /assets/index-BbZ66_IF.js
+ HTTP  15.04.2026 23:47:00 ::1 GET /assets/index-VL-7b9nB.css
+ HTTP  15.04.2026 23:47:00 ::1 Returned 304 in 2 ms
+ HTTP  15.04.2026 23:47:00 ::1 Returned 304 in 2 ms
+ HTTP  15.04.2026 23:47:00 ::1 GET /assets/bobr-DEePSR1h.jpg
+ HTTP  15.04.2026 23:47:00 ::1 Returned 200 in 2 ms
+ HTTP  15.04.2026 23:47:24 ::1 GET /
+ HTTP  15.04.2026 23:47:24 ::1 Returned 304 in 1 ms
+ HTTP  15.04.2026 23:47:24 ::1 GET /assets/index-BbZ66_IF.js
+ HTTP  15.04.2026 23:47:24 ::1 GET /assets/index-VL-7b9nB.css
+ HTTP  15.04.2026 23:47:24 ::1 Returned 304 in 1 ms
+ HTTP  15.04.2026 23:47:24 ::1 Returned 304 in 1 ms
+ HTTP  15.04.2026 23:48:28 192.168.2.1 GET /gallery
+ HTTP  15.04.2026 23:48:28 192.168.2.1 Returned 200 in 1 ms
+ HTTP  15.04.2026 23:48:28 192.168.2.1 GET /assets/index-BbZ66_IF.js
+ HTTP  15.04.2026 23:48:28 192.168.2.1 GET /assets/index-VL-7b9nB.css
+ HTTP  15.04.2026 23:48:28 192.168.2.1 Returned 304 in 2 ms
+ HTTP  15.04.2026 23:48:28 192.168.2.1 Returned 304 in 2 ms

@@ -6,27 +6,27 @@
     </div>
     <div class="cards">
       <RouterLink to="/bobr" class="card">
-        <span class="card-icon" v-html="'&#x1F4F7;'"></span>
+        <img src="@/assets/bobr.jpg" alt="Meet the Bobr" class="card-img" />
         <h3>Meet the Bobr</h3>
         <p>See a real beaver up close</p>
       </RouterLink>
       <RouterLink to="/gallery" class="card">
-        <span class="card-icon" v-html="'&#x1F5BC;&#xFE0F;'"></span>
+        <img src="@/assets/gallery/dam-builder.jpg" alt="Gallery" class="card-img" />
         <h3>Gallery</h3>
         <p>Beautiful beaver scenes</p>
       </RouterLink>
       <RouterLink to="/facts" class="card">
-        <span class="card-icon" v-html="'&#x1F4A1;'"></span>
+        <img src="@/assets/gallery/bark-feast.jpg" alt="Fun Facts" class="card-img" />
         <h3>Fun Facts</h3>
         <p>Surprising beaver trivia</p>
       </RouterLink>
       <RouterLink to="/habitat" class="card">
-        <span class="card-icon" v-html="'&#x1F332;'"></span>
+        <img src="@/assets/gallery/lodge.jpg" alt="Habitat" class="card-img" />
         <h3>Habitat</h3>
         <p>Where beavers live</p>
       </RouterLink>
       <RouterLink to="/species" class="card">
-        <span class="card-icon" v-html="'&#x1F4D6;'"></span>
+        <img src="@/assets/gallery/winter-beaver.jpg" alt="Species" class="card-img" />
         <h3>Species</h3>
         <p>Types of beavers worldwide</p>
       </RouterLink>
@@ -75,13 +75,14 @@ import { RouterLink } from 'vue-router'
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 2rem 1.5rem;
+  padding: 0;
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.06);
   border-radius: 14px;
   text-decoration: none;
   color: rgba(255,255,255,0.8);
   transition: all 0.25s ease;
+  overflow: hidden;
 }
 
 .card:hover {
@@ -90,20 +91,23 @@ import { RouterLink } from 'vue-router'
   transform: translateY(-4px);
 }
 
-.card-icon {
-  font-size: 2.2rem;
-  margin-bottom: 0.75rem;
+.card-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
 }
 
 .card h3 {
   font-size: 1.1rem;
   color: #D4A030;
-  margin-bottom: 0.4rem;
+  margin: 0.75rem 0 0.4rem;
+  padding: 0 1rem;
 }
 
 .card p {
   font-size: 0.85rem;
   color: rgba(255,255,255,0.45);
+  padding: 0 1rem 1rem;
 }
 
 /* ===== Mobile ===== */
@@ -129,12 +133,8 @@ import { RouterLink } from 'vue-router'
     gap: 0.75rem;
   }
 
-  .card {
-    padding: 1.25rem 1rem;
-  }
-
-  .card-icon {
-    font-size: 1.8rem;
+  .card-img {
+    height: 120px;
   }
 
   .card h3 {
