@@ -6,27 +6,27 @@
     </div>
     <div class="cards">
       <RouterLink to="/bobr" class="card">
-        <img src="@/assets/bobr.jpg" alt="Meet the Bobr" class="card-img" />
+        <div class="card-icon"><img src="@/assets/icons/bobr.svg" alt="Beaver" /></div>
         <h3>Meet the Bobr</h3>
         <p>See a real beaver up close</p>
       </RouterLink>
       <RouterLink to="/gallery" class="card">
-        <img src="@/assets/gallery/dam-builder.jpg" alt="Gallery" class="card-img" />
+        <div class="card-icon"><img src="@/assets/icons/gallery.svg" alt="Gallery" /></div>
         <h3>Gallery</h3>
         <p>Beautiful beaver scenes</p>
       </RouterLink>
       <RouterLink to="/facts" class="card">
-        <img src="@/assets/gallery/bark-feast.jpg" alt="Fun Facts" class="card-img" />
+        <div class="card-icon"><img src="@/assets/icons/facts.svg" alt="Fun Facts" /></div>
         <h3>Fun Facts</h3>
         <p>Surprising beaver trivia</p>
       </RouterLink>
       <RouterLink to="/habitat" class="card">
-        <img src="@/assets/gallery/lodge.jpg" alt="Habitat" class="card-img" />
+        <div class="card-icon"><img src="@/assets/icons/habitat.svg" alt="Habitat" /></div>
         <h3>Habitat</h3>
         <p>Where beavers live</p>
       </RouterLink>
       <RouterLink to="/species" class="card">
-        <img src="@/assets/gallery/winter-beaver.jpg" alt="Species" class="card-img" />
+        <div class="card-icon"><img src="@/assets/icons/species.svg" alt="Species" /></div>
         <h3>Species</h3>
         <p>Types of beavers worldwide</p>
       </RouterLink>
@@ -64,7 +64,7 @@ import { RouterLink } from 'vue-router'
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1.25rem;
   max-width: 900px;
   margin: 0 auto;
@@ -75,14 +75,13 @@ import { RouterLink } from 'vue-router'
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 0;
+  padding: 1.25rem 1rem 1rem;
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.06);
   border-radius: 14px;
   text-decoration: none;
   color: rgba(255,255,255,0.8);
   transition: all 0.25s ease;
-  overflow: hidden;
 }
 
 .card:hover {
@@ -91,23 +90,32 @@ import { RouterLink } from 'vue-router'
   transform: translateY(-4px);
 }
 
-.card-img {
+.card:hover .card-icon {
+  transform: scale(1.08);
+}
+
+.card-icon {
+  width: 96px;
+  height: 96px;
+  margin-bottom: 0.75rem;
+  transition: transform 0.25s ease;
+}
+
+.card-icon img {
   width: 100%;
-  height: 160px;
-  object-fit: cover;
+  height: 100%;
+  border-radius: 12px;
 }
 
 .card h3 {
   font-size: 1.1rem;
   color: #D4A030;
-  margin: 0.75rem 0 0.4rem;
-  padding: 0 1rem;
+  margin: 0 0 0.4rem;
 }
 
 .card p {
   font-size: 0.85rem;
   color: rgba(255,255,255,0.45);
-  padding: 0 1rem 1rem;
 }
 
 /* ===== Mobile ===== */
@@ -133,8 +141,9 @@ import { RouterLink } from 'vue-router'
     gap: 0.75rem;
   }
 
-  .card-img {
-    height: 120px;
+  .card-icon {
+    width: 72px;
+    height: 72px;
   }
 
   .card h3 {

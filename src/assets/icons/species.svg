@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <linearGradient id="bg5" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1a2a"/>
+      <stop offset="100%" stop-color="#10101a"/>
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" fill="url(#bg5)" rx="12"/>
+  <!-- globe -->
+  <circle cx="60" cy="55" r="28" fill="none" stroke="#D4A030" stroke-width="1.5" opacity="0.3"/>
+  <ellipse cx="60" cy="55" rx="14" ry="28" fill="none" stroke="#D4A030" stroke-width="1" opacity="0.2"/>
+  <line x1="32" y1="55" x2="88" y2="55" stroke="#D4A030" stroke-width="1" opacity="0.2"/>
+  <path d="M35 42 Q60 38 85 42" fill="none" stroke="#D4A030" stroke-width="1" opacity="0.15"/>
+  <path d="M35 68 Q60 72 85 68" fill="none" stroke="#D4A030" stroke-width="1" opacity="0.15"/>
+  <!-- beaver 1 silhouette (left, smaller) -->
+  <g transform="translate(22, 60) scale(0.7)">
+    <ellipse cx="15" cy="20" rx="12" ry="10" fill="#8B6914" opacity="0.8"/>
+    <circle cx="15" cy="8" r="9" fill="#A0791A" opacity="0.8"/>
+    <ellipse cx="15" cy="32" rx="8" ry="3" fill="#6a5010" opacity="0.8"/>
+  </g>
+  <!-- beaver 2 silhouette (right, larger) -->
+  <g transform="translate(65, 55) scale(0.85)">
+    <ellipse cx="15" cy="20" rx="14" ry="11" fill="#6a5010" opacity="0.8"/>
+    <circle cx="15" cy="6" r="10" fill="#8B6914" opacity="0.8"/>
+    <ellipse cx="15" cy="34" rx="9" ry="3.5" fill="#5a3a08" opacity="0.8"/>
+  </g>
+  <!-- labels -->
+  <text x="18" y="105" fill="#D4A030" font-size="9" font-family="sans-serif" opacity="0.5">Castor</text>
+  <text x="68" y="105" fill="#D4A030" font-size="9" font-family="sans-serif" opacity="0.5">Castor</text>
+  <text x="12" y="113" fill="#A0791A" font-size="7" font-family="sans-serif" opacity="0.35">canadensis</text>
+  <text x="68" y="113" fill="#A0791A" font-size="7" font-family="sans-serif" opacity="0.35">fiber</text>
+</svg>
