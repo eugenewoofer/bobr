@@ -49,6 +49,7 @@ const menuItems = [
   { path: '/facts', icon: '&#x1F4A1;', label: 'Fun Facts' },
   { path: '/habitat', icon: '&#x1F332;', label: 'Habitat' },
   { path: '/species', icon: '&#x1F4D6;', label: 'Species' },
+  { path: '/video', icon: '&#x1F3AC;', label: 'Video' },
 ]
 
 function toggle() { isOpen.value = !isOpen.value }
