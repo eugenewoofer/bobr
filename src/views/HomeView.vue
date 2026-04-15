@@ -105,4 +105,46 @@ import { RouterLink } from 'vue-router'
   font-size: 0.85rem;
   color: rgba(255,255,255,0.45);
 }
+
+/* ===== Mobile ===== */
+@media (max-width: 768px) {
+  .home {
+    padding: 4.5rem 1.25rem 2rem;
+  }
+
+  .hero-title {
+    font-size: 1.8rem;
+  }
+
+  .hero-sub {
+    font-size: 0.95rem;
+  }
+
+  .hero {
+    margin-bottom: 2rem;
+  }
+
+  .cards {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .card {
+    padding: 1.25rem 1rem;
+  }
+
+  .card-icon {
+    font-size: 1.8rem;
+  }
+
+  .card h3 {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}
 </style>

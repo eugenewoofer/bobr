@@ -13,6 +13,7 @@ body {
   color: #eee;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 ::-webkit-scrollbar {
@@ -30,4 +31,10 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.25);
+}
+
+/* ===== Responsive utility ===== */
+img {
+  max-width: 100%;
+  height: auto;
 }

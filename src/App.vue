@@ -22,5 +22,13 @@ import SideBar from './components/SideBar.vue'
   margin-left: 240px;
   flex: 1;
   min-height: 100vh;
+  width: calc(100% - 240px);
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
 }
 </style>

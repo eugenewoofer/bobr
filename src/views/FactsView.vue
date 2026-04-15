@@ -28,66 +28,32 @@ const facts = [
 </script>
 
 <style scoped>
-.facts-page {
-  padding: 3rem 2.5rem;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
+.facts-page { padding: 3rem 2.5rem; max-width: 800px; margin: 0 auto; }
 .page-title {
-  font-size: 2.4rem;
-  font-weight: 800;
+  font-size: 2.4rem; font-weight: 800;
   background: linear-gradient(135deg, #8B6914, #D4A030, #F0C050);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   margin-bottom: 0.4rem;
 }
-
-.page-sub {
-  color: rgba(255,255,255,0.45);
-  font-size: 1.05rem;
-  margin-bottom: 2.5rem;
-}
-
-.facts-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
+.page-sub { color: rgba(255,255,255,0.45); font-size: 1.05rem; margin-bottom: 2.5rem; }
+.facts-list { display: flex; flex-direction: column; gap: 1rem; }
 .fact-card {
-  display: flex;
-  gap: 1.25rem;
-  padding: 1.5rem;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 14px;
-  transition: all 0.2s ease;
+  display: flex; gap: 1.25rem; padding: 1.5rem;
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px; transition: all 0.2s ease;
 }
+.fact-card:hover { border-color: rgba(212,160,48,0.15); background: rgba(139,105,20,0.06); }
+.fact-num { font-size: 1.8rem; font-weight: 800; color: rgba(212,160,48,0.25); min-width: 48px; line-height: 1; padding-top: 4px; }
+.fact-body h3 { font-size: 1.1rem; color: #D4A030; margin-bottom: 0.4rem; }
+.fact-body p { font-size: 0.92rem; color: rgba(255,255,255,0.6); line-height: 1.55; }
 
-.fact-card:hover {
-  border-color: rgba(212,160,48,0.15);
-  background: rgba(139,105,20,0.06);
-}
-
-.fact-num {
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: rgba(212,160,48,0.25);
-  min-width: 48px;
-  line-height: 1;
-  padding-top: 4px;
-}
-
-.fact-body h3 {
-  font-size: 1.1rem;
-  color: #D4A030;
-  margin-bottom: 0.4rem;
-}
-
-.fact-body p {
-  font-size: 0.92rem;
-  color: rgba(255,255,255,0.6);
-  line-height: 1.55;
+@media (max-width: 768px) {
+  .facts-page { padding: 4.5rem 1rem 2rem; }
+  .page-title { font-size: 1.6rem; }
+  .page-sub { font-size: 0.9rem; margin-bottom: 1.5rem; }
+  .fact-card { padding: 1rem; gap: 0.75rem; }
+  .fact-num { font-size: 1.3rem; min-width: 36px; }
+  .fact-body h3 { font-size: 0.95rem; }
+  .fact-body p { font-size: 0.85rem; }
 }
 </style>
