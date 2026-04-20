@@ -15,6 +15,11 @@
         <h3>Gallery</h3>
         <p>Beautiful beaver scenes</p>
       </RouterLink>
+      <RouterLink to="/video" class="card">
+        <div class="card-icon"><img src="@/assets/icons/video.svg" alt="Video" /></div>
+        <h3>Video</h3>
+        <p>Watch beaver documentaries</p>
+      </RouterLink>
       <RouterLink to="/facts" class="card">
         <div class="card-icon"><img src="@/assets/icons/facts.svg" alt="Fun Facts" /></div>
         <h3>Fun Facts</h3>

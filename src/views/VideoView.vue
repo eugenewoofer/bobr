@@ -30,19 +30,19 @@ const videos = [
     description: "See how beavers construct elaborate dams and lodges, transforming entire landscapes with their engineering skills."
   },
   {
-    id: "N7sEqG0ByBs",
-    title: "How Beavers Build Dams",
-    description: "A detailed look at the step-by-step process beavers use to fell trees, transport logs, and seal their dams."
+    id: "eAPqQFWEoKg",
+    title: "Busy Beavers Build Dam Ahead of Winter",
+    description: "Watch beavers race against time to build their dam before winter arrives in Yellowstone."
   },
   {
-    id: "dX-MhRiwkfY",
-    title: "Beaver vs. River: Nature's Engineers",
-    description: "Watch a family of beavers battle against a fast-flowing river to build the perfect dam for their lodge."
+    id: "CfEglOVi8k8",
+    title: "How Beavers Evolved to Build Dams",
+    description: "The evolutionary story behind one of nature's most impressive engineering behaviors."
   },
   {
-    id: "KRVNSwF3Mgo",
-    title: "Baby Beavers: First Swim",
-    description: "Adorable footage of baby beavers learning to swim and exploring the world outside their lodge for the first time."
+    id: "LtARQMyNDeA",
+    title: "Beaver Fells Tree in Just a Few Hours",
+    description: "Incredible footage of a beaver taking down a full-sized tree using only its teeth."
   },
   {
     id: "PLyBZ1mdg2c",

