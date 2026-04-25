@@ -1,0 +1,1946 @@
+[
+  {
+    "id": 0,
+    "file": "architecture.md",
+    "language": "markdown",
+    "line_start": 1,
+    "line_end": 20,
+    "text": "# Архитектура проекта Bobr\n\n## 🎯 Обзор\n\nBobr — это современное одностраничное приложение (SPA), построенное на Vue 3, TypeScript и Vite. Проект представляет собой информационный сайт о бобрах с адаптивным дизайном, тёмной темой и навигацией через боковую панель.\n\n**Основной стек:**\n- **Vue 3.5** (Composition API, `<script setup>`)\n- **TypeScript 5.6** (строгая типизация)\n- **Vite 6.0** (сборка и dev‑сервер)\n- **Vue Router 4.4** (клиентская маршрутизация)\n- **CSS3** (scoped стили, CSS Grid, Flexbox, градиенты, медиа‑запросы)\n\n## 📁 Структура проекта\n\n```\nbobr/\n├── src/\n│   ├── assets/                 # Статические ресурсы\n│   │   ├── gallery/            # Изображения для галереи",
+    "token_count": 172
+  },
+  {
+    "id": 1,
+    "file": "architecture.md",
+    "language": "markdown",
+    "line_start": 16,
+    "line_end": 35,
+    "text": "```\nbobr/\n├── src/\n│   ├── assets/                 # Статические ресурсы\n│   │   ├── gallery/            # Изображения для галереи\n│   │   ├── icons/              # SVG‑иконки для карточек\n│   │   ├── bobr-icon.svg       # Логотип боковой панели\n│   │   └── bobr.jpg            # Главное изображение бобра\n│   ├── components/             # Переиспользуемые компоненты\n│   │   └── SideBar.vue         # Адаптивная боковая панель\n│   ├── router/                 # Конфигурация маршрутизатора\n│   │   └── index.ts\n│   ├── views/                  # Страницы приложения\n│   │   ├── HomeView.vue        # Главная страница с карточками\n│   │   ├── BobrView.vue        # Страница с описанием бобра\n│   │   ├── GalleryView.vue     # Галерея изображений\n│   │   ├── FactsView.vue       # Интересные факты\n│   │   ├── HabitatView.vue     # Среда обитания\n│   │   ├── SpeciesView.vue     # Виды бобров\n│   │   └── VideoView.vue       # Видео (заглушка)",
+    "token_count": 235
+  },
+  {
+    "id": 2,
+    "file": "architecture.md",
+    "language": "markdown",
+    "line_start": 31,
+    "line_end": 50,
+    "text": "│   │   ├── GalleryView.vue     # Галерея изображений\n│   │   ├── FactsView.vue       # Интересные факты\n│   │   ├── HabitatView.vue     # Среда обитания\n│   │   ├── SpeciesView.vue     # Виды бобров\n│   │   └── VideoView.vue       # Видео (заглушка)\n│   ├── App.vue                 # Корневой компонент\n│   ├── main.ts                 # Точка входа\n│   └── style.css               # Глобальные стили\n├── index.html                  # HTML‑шаблон\n├── vite.config.ts              # Конфигурация Vite\n├── tsconfig.json               # Конфигурация TypeScript\n├── package.json                # Зависимости и скрипты\n├── README.md                   # Документация проекта\n└── architecture.md             *этот файл*\n```\n\n## 🏗️ Архитектурные решения\n\n### 1. **Компонентная архитектура**\n- **App.vue** — корневой компонент, содержит `SideBar` и `RouterView`.",
+    "token_count": 214
+  },
+  {
+    "id": 3,
+    "file": "architecture.md",
+    "language": "markdown",
+    "line_start": 46,
+    "line_end": 65,
+    "text": "\n## 🏗️ Архитектурные решения\n\n### 1. **Компонентная архитектура**\n- **App.vue** — корневой компонент, содержит `SideBar` и `RouterView`.\n- **SideBar.vue** — единственный переиспользуемый компонент, отвечает за навигацию и адаптивное меню.\n- **Views** — страницы, соответствующие маршрутам. Каждый view независим и содержит свою логику и стили.\n\n### 2. **Состояние (State Management)**\nЦентрализованное состояние (Pinia/Vuex) не используется, так как приложение статическое и не требует сложного управления данными.\n\n**Локальное состояние:**\n- `ref` / `reactive` внутри компонентов (например, `isOpen` в `SideBar.vue` для управления мобильным меню).\n- Массивы данных (галерея, факты) объявлены непосредственно в компонентах.\n\n**Преимущества:** простота, отсутствие накладных расходов.\n**Недостатки:** при масштабировании может потребоваться централизованный store.\n\n### 3. **Маршрутизация (Vue Router 4)**\nКонфигурация в `src/router/index.ts`:",
+    "token_count": 236
+  },
+  {
+    "id": 4,
+    "file": "architecture.md",
+    "language": "markdown",
+    "line_start": 61,
+    "line_end": 80,
+    "text": "**Преимущества:** простота, отсутствие накладных расходов.\n**Недостатки:** при масштабировании может потребоваться централизованный store.\n\n### 3. **Маршрутизация (Vue Router 4)**\nКонфигурация в `src/router/index.ts`:\n- Используется `createRouter` с `createWebHistory` (HTML5 History Mode).\n- Все маршруты загружаются синхронно (ленивая загрузка не требуется из‑за небольшого размера).\n- Каждый маршрут сопоставлен с соответствующим view‑компонентом.\n\n```typescript\nconst routes: RouteRecordRaw[] = [\n  { path: '/', name: 'home', component: HomeView },\n  { path: '/bobr', name: 'bobr', component: BobrView },\n  // ...\n]\n```\n\n### 4. **Стили и дизайн**\n- **Глобальные стили** (`style.css`) — сброс отступов, скроллбар, базовые настройки.\n- **Scoped стили** в каждом компоненте — изоляция, предотвращение конфликтов.",
+    "token_count": 204
+  },
+  {
+    "id": 5,
+    "file": "architecture.md",
+    "language": "markdown",
+    "line_start": 76,
+    "line_end": 95,
+    "text": "```\n\n### 4. **Стили и дизайн**\n- **Глобальные стили** (`style.css`) — сброс отступов, скроллбар, базовые настройки.\n- **Scoped стили** в каждом компоненте — изоляция, предотвращение конфликтов.\n- **Адаптивность:** mobile‑first, медиа‑запросы в каждом компоненте.\n- **Дизайн‑система:**\n  - Цветовая палитра: тёмный фон (`#0f0f1a`), золотые градиенты (`#8B6914` → `#D4A030`).\n  - Типографика: системные шрифты, градиентный текст для заголовков.\n  - Эффекты: backdrop‑blur, плавные переходы, hover‑анимации.\n\n### 5. **Обработка ассетов**\n- **Изображения:** импортируются напрямую в компоненты через `import` (TypeScript).\n- **SVG:** используются как `img` или встроенные иконки через эмодзи‑фолбэк.\n- **Оптимизация:** Vite автоматически обрабатывает ассеты (хэширование, сжатие).\n\n### 6. **TypeScript**\n- Строгий режим (`strict: true`).\n- Алиасы путей (`@/` → `./src/`).\n- Типизация пропсов и событий не требуется (пропсы не используются).",
+    "token_count": 234
+  },
+  {
+    "id": 6,
+    "file": "architecture.md",
+    "language": "markdown",
+    "line_start": 91,
+    "line_end": 110,
+    "text": "\n### 6. **TypeScript**\n- Строгий режим (`strict: true`).\n- Алиасы путей (`@/` → `./src/`).\n- Типизация пропсов и событий не требуется (пропсы не используются).\n- Типизация данных в компонентах (массивы объектов).\n\n## 🔧 Паттерны и практики\n\n### **Composition API (`<script setup>`)**\nВсе компоненты используют синтаксис `<script setup lang=\"ts\">`, что обеспечивает:\n- Локальную реактивность через `ref`, `reactive`.\n- Прямое использование хуков жизненного цикла (`onMounted`, `watch`).\n- Чистую логику без boilerplate.\n\n### **Реактивность**\n- Простая реактивность через `ref` (например, `isOpen` в SideBar).\n- Отсутствие сложных вычисляемых свойств (computed) и watchers (кроме отслеживания маршрута).\n\n### **Адаптивная навигация**",
+    "token_count": 183
+  },
+  {
+    "id": 7,
+    "file": "architecture.md",
+    "language": "markdown",
+    "line_start": 106,
+    "line_end": 125,
+    "text": "### **Реактивность**\n- Простая реактивность через `ref` (например, `isOpen` в SideBar).\n- Отсутствие сложных вычисляемых свойств (computed) и watchers (кроме отслеживания маршрута).\n\n### **Адаптивная навигация**\nSideBar реализует паттерн **Conditional Rendering**:\n- На десктопе — фиксированная панель.\n- На мобильных — гамбургер‑меню с оверлеем и анимацией.\n\n### **Композиция стилей**\n- **Utility‑классы** не используются (нет Tailwind).\n- **CSS‑переменные** не используются, цвета заданы явно.\n- **БЭМ**‑подобное именование классов (`.sidebar`, `.sidebar-brand`).\n\n### **Импорт ассетов**\nПаттерн **Direct Import**:\n```typescript\nimport damBuilder from '@/assets/gallery/dam-builder.jpg'\n```\nVite преобразует импорты в оптимизированные URL.",
+    "token_count": 186
+  },
+  {
+    "id": 8,
+    "file": "architecture.md",
+    "language": "markdown",
+    "line_start": 121,
+    "line_end": 140,
+    "text": "Паттерн **Direct Import**:\n```typescript\nimport damBuilder from '@/assets/gallery/dam-builder.jpg'\n```\nVite преобразует импорты в оптимизированные URL.\n\n## 🚀 Сборка и развёртывание\n\n### **Vite Configuration** (`vite.config.ts`)\n- Плагин `@vitejs/plugin-vue` для обработки `.vue` файлов.\n- Алиас `@` для удобных импортов.\n- Dev‑сервер с горячей перезагрузкой.\n\n### **Скрипты npm**\n- `npm run dev` — запуск dev‑сервера на `localhost:5173`.\n- `npm run build` — production‑сборка в `dist/`.\n- `npm run preview` — локальный просмотр собранного приложения.\n\n### **Production‑сборка**\n- Vue‑компоненты компилируются в оптимизированный JavaScript.",
+    "token_count": 160
+  },
+  {
+    "id": 9,
+    "file": "architecture.md",
+    "language": "markdown",
+    "line_start": 136,
+    "line_end": 155,
+    "text": "- `npm run build` — production‑сборка в `dist/`.\n- `npm run preview` — локальный просмотр собранного приложения.\n\n### **Production‑сборка**\n- Vue‑компоненты компилируются в оптимизированный JavaScript.\n- CSS минифицируется и извлекается в отдельные файлы.\n- Ассеты хэшируются для кэширования.\n\n## 📊 Оценка архитектуры\n\n### ✅ **Сильные стороны**\n1. **Простота и ясность** — минимальная сложность, идеально для статического сайта.\n2. **Современный стек** — Vue 3, Composition API, TypeScript.\n3. **Полная адаптивность** — мобильный и десктопный UX.\n4. **Чистая структура** — разделение на views/components/router.\n5. **Быстрая сборка** — Vite обеспечивает мгновенный hot‑reload.\n\n### ⚠️ **Области для улучшения**\n1. **Отсутствие тестов** — нет unit‑ или e2e‑тестов.\n2. **Нет линтинга/форматирования** — ESLint, Prettier не настроены.",
+    "token_count": 208
+  },
+  {
+    "id": 10,
+    "file": "architecture.md",
+    "language": "markdown",
+    "line_start": 151,
+    "line_end": 170,
+    "text": "5. **Быстрая сборка** — Vite обеспечивает мгновенный hot‑reload.\n\n### ⚠️ **Области для улучшения**\n1. **Отсутствие тестов** — нет unit‑ или e2e‑тестов.\n2. **Нет линтинга/форматирования** — ESLint, Prettier не настроены.\n3. **Дублирование стилей** — медиа‑запросы повторяются в каждом компоненте.\n4. **Нет централизованного состояния** — при добавлении динамики (например, избранное) потребуется Pinia.\n5. **Нет SEO‑оптимизации** — статические мета‑теги, отсутствие SSR.\n\n### 🔮 **Рекомендации по развитию**\n1. **Добавить тесты** — Vitest + Vue Test Utils для компонентов.\n2. **Настроить линтинг** — ESLint с `@vue/typescript`, Prettier.\n3. **Вынести общие стили** — CSS‑переменные для цветов, миксины для медиа‑запросов.\n4. **Внедрить Pinia** — для будущего состояния (например, избранные изображения).\n5. **Добавить SSR/SSG** — VitePress или Nuxt для SEO.\n6. **Оптимизировать изображения** — конвертация в WebP, lazy loading.\n\n## 🧩 Заключение\n\nАрхитектура Bobr следует современным best practices для небольших Vue‑приложений. Проект хорошо структурирован, использует Composition API и TypeScript, полностью адаптивен. Для текущего scope (статический сайт) архитектура избыточна, что является плюсом для поддержки и масштабирования.",
+    "token_count": 309
+  },
+  {
+    "id": 11,
+    "file": "architecture.md",
+    "language": "markdown",
+    "line_start": 166,
+    "line_end": 178,
+    "text": "6. **Оптимизировать изображения** — конвертация в WebP, lazy loading.\n\n## 🧩 Заключение\n\nАрхитектура Bobr следует современным best practices для небольших Vue‑приложений. Проект хорошо структурирован, использует Composition API и TypeScript, полностью адаптивен. Для текущего scope (статический сайт) архитектура избыточна, что является плюсом для поддержки и масштабирования.\n\n**Ключевые паттерны:**\n- **Composition over Options API** — логика внутри `<script setup>`.\n- **View‑Component Separation** — чёткое разделение страниц и переиспользуемых компонентов.\n- **Mobile‑First CSS** — стили начинаются с мобильных устройств.\n- **Direct Asset Import** — типобезопасный импорт изображений.\n\nПроект готов к расширению: добавлению API‑запросов, глобального состояния, тестов и CI/CD.",
+    "token_count": 196
+  },
+  {
+    "id": 12,
+    "file": "env.d.ts",
+    "language": "typescript",
+    "line_start": 1,
+    "line_end": 8,
+    "text": "/// <reference types=\"vite/client\" />\n\ndeclare module \"*.vue\" {\n  import type { DefineComponent } from \"vue\"\n  const component: DefineComponent<{}, {}, any>\n  export default component\n}\n",
+    "token_count": 47
+  },
+  {
+    "id": 13,
+    "file": "index.html",
+    "language": "html",
+    "line_start": 1,
+    "line_end": 14,
+    "text": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Bobr</title>\n  <link rel=\"icon\" href=\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F9AB;</text></svg>\">\n</head>\n<body>\n  <div id=\"app\"></div>\n  <script type=\"module\" src=\"/src/main.ts\"></script>\n</body>\n</html>\n",
+    "token_count": 107
+  },
+  {
+    "id": 14,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1,
+    "line_end": 20,
+    "text": "{\n  \"name\": \"bobr\",\n  \"version\": \"1.0.0\",\n  \"lockfileVersion\": 3,\n  \"requires\": true,\n  \"packages\": {\n    \"\": {\n      \"name\": \"bobr\",\n      \"version\": \"1.0.0\",\n      \"dependencies\": {\n        \"vue\": \"^3.5.0\",\n        \"vue-router\": \"^4.4.0\"\n      },\n      \"devDependencies\": {\n        \"@vitejs/plugin-vue\": \"^5.0.0\",\n        \"typescript\": \"^5.6.0\",\n        \"vite\": \"^6.0.0\",\n        \"vue-tsc\": \"^2.1.0\"\n      }\n    },",
+    "token_count": 104
+  },
+  {
+    "id": 15,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 16,
+    "line_end": 35,
+    "text": "        \"typescript\": \"^5.6.0\",\n        \"vite\": \"^6.0.0\",\n        \"vue-tsc\": \"^2.1.0\"\n      }\n    },\n    \"node_modules/@babel/helper-string-parser\": {\n      \"version\": \"7.27.1\",\n      \"resolved\": \"https://registry.npmjs.org/@babel/helper-string-parser/-/helper-string-parser-7.27.1.tgz\",\n      \"integrity\": \"sha512-qMlSxKbpRlAridDExk92nSobyDdpPijUq2DW6oDnUqd0iOGxmQjyqhMIihI9+zv4LPyZdRje2cavWPbCbWm3eA==\",\n      \"license\": \"MIT\",\n      \"engines\": {\n        \"node\": \">=6.9.0\"\n      }\n    },\n    \"node_modules/@babel/helper-validator-identifier\": {\n      \"version\": \"7.28.5\",\n      \"resolved\": \"https://registry.npmjs.org/@babel/helper-validator-identifier/-/helper-validator-identifier-7.28.5.tgz\",\n      \"integrity\": \"sha512-qSs4ifwzKJSV39ucNjsvc6WVHs6b7S03sOh2OcHF9UHfVPqWWALUsNUVzhSBiItjRZoLHx7nIarVjqKVusUZ1Q==\",\n      \"license\": \"MIT\",\n      \"engines\": {",
+    "token_count": 215
+  },
+  {
+    "id": 16,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 31,
+    "line_end": 50,
+    "text": "      \"version\": \"7.28.5\",\n      \"resolved\": \"https://registry.npmjs.org/@babel/helper-validator-identifier/-/helper-validator-identifier-7.28.5.tgz\",\n      \"integrity\": \"sha512-qSs4ifwzKJSV39ucNjsvc6WVHs6b7S03sOh2OcHF9UHfVPqWWALUsNUVzhSBiItjRZoLHx7nIarVjqKVusUZ1Q==\",\n      \"license\": \"MIT\",\n      \"engines\": {\n        \"node\": \">=6.9.0\"\n      }\n    },\n    \"node_modules/@babel/parser\": {\n      \"version\": \"7.29.2\",\n      \"resolved\": \"https://registry.npmjs.org/@babel/parser/-/parser-7.29.2.tgz\",\n      \"integrity\": \"sha512-4GgRzy/+fsBa72/RZVJmGKPmZu9Byn8o4MoLpmNe1m8ZfYnz5emHLQz3U4gLud6Zwl0RZIcgiLD7Uq7ySFuDLA==\",\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@babel/types\": \"^7.29.0\"\n      },\n      \"bin\": {\n        \"parser\": \"bin/babel-parser.js\"\n      },\n      \"engines\": {",
+    "token_count": 198
+  },
+  {
+    "id": 17,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 46,
+    "line_end": 65,
+    "text": "      },\n      \"bin\": {\n        \"parser\": \"bin/babel-parser.js\"\n      },\n      \"engines\": {\n        \"node\": \">=6.0.0\"\n      }\n    },\n    \"node_modules/@babel/types\": {\n      \"version\": \"7.29.0\",\n      \"resolved\": \"https://registry.npmjs.org/@babel/types/-/types-7.29.0.tgz\",\n      \"integrity\": \"sha512-LwdZHpScM4Qz8Xw2iKSzS+cfglZzJGvofQICy7W7v4caru4EaAmyUuO6BGrbyQ2mYV11W0U8j5mBhd14dd3B0A==\",\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@babel/helper-string-parser\": \"^7.27.1\",\n        \"@babel/helper-validator-identifier\": \"^7.28.5\"\n      },\n      \"engines\": {\n        \"node\": \">=6.9.0\"\n      }",
+    "token_count": 152
+  },
+  {
+    "id": 18,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 61,
+    "line_end": 80,
+    "text": "        \"@babel/helper-validator-identifier\": \"^7.28.5\"\n      },\n      \"engines\": {\n        \"node\": \">=6.9.0\"\n      }\n    },\n    \"node_modules/@esbuild/aix-ppc64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/aix-ppc64/-/aix-ppc64-0.25.12.tgz\",\n      \"integrity\": \"sha512-Hhmwd6CInZ3dwpuGTF8fJG6yoWmsToE+vYgD4nytZVxcu1ulHpUQRAB1UJ8+N1Am3Mz4+xOByoQoSZf4D+CpkA==\",\n      \"cpu\": [\n        \"ppc64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"aix\"\n      ],\n      \"engines\": {",
+    "token_count": 142
+  },
+  {
+    "id": 19,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 76,
+    "line_end": 95,
+    "text": "      \"optional\": true,\n      \"os\": [\n        \"aix\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/android-arm\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/android-arm/-/android-arm-0.25.12.tgz\",\n      \"integrity\": \"sha512-VJ+sKvNA/GE7Ccacc9Cha7bpS8nyzVv0jdVgwNDaR4gDMC/2TTRc33Ip8qrNYUcpkOHUT5OZ0bUcNNVZQ9RLlg==\",\n      \"cpu\": [\n        \"arm\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"android\"",
+    "token_count": 135
+  },
+  {
+    "id": 20,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 91,
+    "line_end": 110,
+    "text": "      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"android\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/android-arm64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/android-arm64/-/android-arm64-0.25.12.tgz\",\n      \"integrity\": \"sha512-6AAmLG7zwD1Z159jCKPvAxZd4y/VTO0VkprYy+3N2FtJ8+BQWFXU+OxARIwA46c5tdD9SsKGZ/1ocqBS/gAKHg==\",\n      \"cpu\": [\n        \"arm64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,",
+    "token_count": 141
+  },
+  {
+    "id": 21,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 106,
+    "line_end": 125,
+    "text": "        \"arm64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"android\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/android-x64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/android-x64/-/android-x64-0.25.12.tgz\",\n      \"integrity\": \"sha512-5jbb+2hhDHx5phYR2By8GTWEzn6I9UqR11Kwf22iKbNpYrsmRB18aX/9ivc5cabcUiAT/wM+YIZ6SG9QO6a8kg==\",\n      \"cpu\": [\n        \"x64\"\n      ],\n      \"dev\": true,",
+    "token_count": 133
+  },
+  {
+    "id": 22,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 121,
+    "line_end": 140,
+    "text": "      \"integrity\": \"sha512-5jbb+2hhDHx5phYR2By8GTWEzn6I9UqR11Kwf22iKbNpYrsmRB18aX/9ivc5cabcUiAT/wM+YIZ6SG9QO6a8kg==\",\n      \"cpu\": [\n        \"x64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"android\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/darwin-arm64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.25.12.tgz\",\n      \"integrity\": \"sha512-N3zl+lxHCifgIlcMUP5016ESkeQjLj/959RxxNYIthIg+CQHInujFuXeWbWMgnTo4cp5XVHqFPmpyu9J65C1Yg==\",\n      \"cpu\": [\n        \"arm64\"",
+    "token_count": 160
+  },
+  {
+    "id": 23,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 136,
+    "line_end": 155,
+    "text": "      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.25.12.tgz\",\n      \"integrity\": \"sha512-N3zl+lxHCifgIlcMUP5016ESkeQjLj/959RxxNYIthIg+CQHInujFuXeWbWMgnTo4cp5XVHqFPmpyu9J65C1Yg==\",\n      \"cpu\": [\n        \"arm64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"darwin\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/darwin-x64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/darwin-x64/-/darwin-x64-0.25.12.tgz\",\n      \"integrity\": \"sha512-HQ9ka4Kx21qHXwtlTUVbKJOAnmG1ipXhdWTmNXiPzPfWKpXqASVcWdnf2bnL73wgjNrFXAa3yYvBSd9pzfEIpA==\",",
+    "token_count": 182
+  },
+  {
+    "id": 24,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 151,
+    "line_end": 170,
+    "text": "    },\n    \"node_modules/@esbuild/darwin-x64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/darwin-x64/-/darwin-x64-0.25.12.tgz\",\n      \"integrity\": \"sha512-HQ9ka4Kx21qHXwtlTUVbKJOAnmG1ipXhdWTmNXiPzPfWKpXqASVcWdnf2bnL73wgjNrFXAa3yYvBSd9pzfEIpA==\",\n      \"cpu\": [\n        \"x64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"darwin\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/freebsd-arm64\": {\n      \"version\": \"0.25.12\",",
+    "token_count": 141
+  },
+  {
+    "id": 25,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 166,
+    "line_end": 185,
+    "text": "        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/freebsd-arm64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/freebsd-arm64/-/freebsd-arm64-0.25.12.tgz\",\n      \"integrity\": \"sha512-gA0Bx759+7Jve03K1S0vkOu5Lg/85dou3EseOGUes8flVOGxbhDDh/iZaoek11Y8mtyKPGF3vP8XhnkDEAmzeg==\",\n      \"cpu\": [\n        \"arm64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"freebsd\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },",
+    "token_count": 133
+  },
+  {
+    "id": 26,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 181,
+    "line_end": 200,
+    "text": "      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/freebsd-x64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/freebsd-x64/-/freebsd-x64-0.25.12.tgz\",\n      \"integrity\": \"sha512-TGbO26Yw2xsHzxtbVFGEXBFH0FRAP7gtcPE7P5yP7wGy7cXK2oO7RyOhL5NLiqTlBh47XhmIUXuGciXEqYFfBQ==\",\n      \"cpu\": [\n        \"x64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"freebsd\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"",
+    "token_count": 135
+  },
+  {
+    "id": 27,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 196,
+    "line_end": 215,
+    "text": "      \"os\": [\n        \"freebsd\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/linux-arm\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/linux-arm/-/linux-arm-0.25.12.tgz\",\n      \"integrity\": \"sha512-lPDGyC1JPDou8kGcywY0YILzWlhhnRjdof3UlcoqYmS9El818LLfJJc3PXXgZHrHCAKs/Z2SeZtDJr5MrkxtOw==\",\n      \"cpu\": [\n        \"arm\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ],",
+    "token_count": 130
+  },
+  {
+    "id": 28,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 211,
+    "line_end": 230,
+    "text": "      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/linux-arm64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/linux-arm64/-/linux-arm64-0.25.12.tgz\",\n      \"integrity\": \"sha512-8bwX7a8FghIgrupcxb4aUmYDLp8pX06rGh5HqDT7bB+8Rdells6mHvrFHHW2JAOPZUbnjUpKTLg6ECyzvas2AQ==\",\n      \"cpu\": [\n        \"arm64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [",
+    "token_count": 137
+  },
+  {
+    "id": 29,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 226,
+    "line_end": 245,
+    "text": "      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/linux-ia32\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/linux-ia32/-/linux-ia32-0.25.12.tgz\",\n      \"integrity\": \"sha512-0y9KrdVnbMM2/vG8KfU0byhUN+EFCny9+8g202gYqSSVMonbsCfLjUO+rCci7pM0WBEtz+oK/PIwHkzxkyharA==\",\n      \"cpu\": [\n        \"ia32\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",",
+    "token_count": 134
+  },
+  {
+    "id": 30,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 241,
+    "line_end": 260,
+    "text": "      \"cpu\": [\n        \"ia32\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/linux-loong64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/linux-loong64/-/linux-loong64-0.25.12.tgz\",\n      \"integrity\": \"sha512-h///Lr5a9rib/v1GGqXVGzjL4TMvVTv+s1DPoxQdz7l/AYv6LDSxdIwzxkrPW438oUXiDtwM10o9PmwS/6Z0Ng==\",\n      \"cpu\": [\n        \"loong64\"\n      ],",
+    "token_count": 134
+  },
+  {
+    "id": 31,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 256,
+    "line_end": 275,
+    "text": "      \"resolved\": \"https://registry.npmjs.org/@esbuild/linux-loong64/-/linux-loong64-0.25.12.tgz\",\n      \"integrity\": \"sha512-h///Lr5a9rib/v1GGqXVGzjL4TMvVTv+s1DPoxQdz7l/AYv6LDSxdIwzxkrPW438oUXiDtwM10o9PmwS/6Z0Ng==\",\n      \"cpu\": [\n        \"loong64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/linux-mips64el\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/linux-mips64el/-/linux-mips64el-0.25.12.tgz\",\n      \"integrity\": \"sha512-iyRrM1Pzy9GFMDLsXn1iHUm18nhKnNMWscjmp4+hpafcZjrr2WbT//d20xaGljXDBYHqRcl8HnxbX6uaA/eGVw==\",\n      \"cpu\": [",
+    "token_count": 183
+  },
+  {
+    "id": 32,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 271,
+    "line_end": 290,
+    "text": "    \"node_modules/@esbuild/linux-mips64el\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/linux-mips64el/-/linux-mips64el-0.25.12.tgz\",\n      \"integrity\": \"sha512-iyRrM1Pzy9GFMDLsXn1iHUm18nhKnNMWscjmp4+hpafcZjrr2WbT//d20xaGljXDBYHqRcl8HnxbX6uaA/eGVw==\",\n      \"cpu\": [\n        \"mips64el\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/linux-ppc64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/linux-ppc64/-/linux-ppc64-0.25.12.tgz\",",
+    "token_count": 166
+  },
+  {
+    "id": 33,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 286,
+    "line_end": 305,
+    "text": "      }\n    },\n    \"node_modules/@esbuild/linux-ppc64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/linux-ppc64/-/linux-ppc64-0.25.12.tgz\",\n      \"integrity\": \"sha512-9meM/lRXxMi5PSUqEXRCtVjEZBGwB7P/D4yT8UG/mwIdze2aV4Vo6U5gD3+RsoHXKkHCfSxZKzmDssVlRj1QQA==\",\n      \"cpu\": [\n        \"ppc64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/linux-riscv64\": {",
+    "token_count": 137
+  },
+  {
+    "id": 34,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 301,
+    "line_end": 320,
+    "text": "      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/linux-riscv64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/linux-riscv64/-/linux-riscv64-0.25.12.tgz\",\n      \"integrity\": \"sha512-Zr7KR4hgKUpWAwb1f3o5ygT04MzqVrGEGXGLnj15YQDJErYu/BGg+wmFlIDOdJp0PmB0lLvxFIOXZgFRrdjR0w==\",\n      \"cpu\": [\n        \"riscv64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }",
+    "token_count": 136
+  },
+  {
+    "id": 35,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 316,
+    "line_end": 335,
+    "text": "        \"linux\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/linux-s390x\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/linux-s390x/-/linux-s390x-0.25.12.tgz\",\n      \"integrity\": \"sha512-MsKncOcgTNvdtiISc/jZs/Zf8d0cl/t3gYWX8J9ubBnVOwlk65UIEEvgBORTiljloIWnBzLs4qhzPkJcitIzIg==\",\n      \"cpu\": [\n        \"s390x\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ],\n      \"engines\": {",
+    "token_count": 133
+  },
+  {
+    "id": 36,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 331,
+    "line_end": 350,
+    "text": "      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/linux-x64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.25.12.tgz\",\n      \"integrity\": \"sha512-uqZMTLr/zR/ed4jIGnwSLkaHmPjOjJvnm6TVVitAa08SLS9Z0VM8wIRx7gWbJB5/J54YuIMInDquWyYvQLZkgw==\",\n      \"cpu\": [\n        \"x64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"",
+    "token_count": 133
+  },
+  {
+    "id": 37,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 346,
+    "line_end": 365,
+    "text": "      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/netbsd-arm64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/netbsd-arm64/-/netbsd-arm64-0.25.12.tgz\",\n      \"integrity\": \"sha512-xXwcTq4GhRM7J9A8Gv5boanHhRa/Q9KLVmcyXHCTaM4wKfIpWkdXiMog/KsnxzJ0A1+nD+zoecuzqPmCRyBGjg==\",\n      \"cpu\": [\n        \"arm64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,",
+    "token_count": 139
+  },
+  {
+    "id": 38,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 361,
+    "line_end": 380,
+    "text": "        \"arm64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"netbsd\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/netbsd-x64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/netbsd-x64/-/netbsd-x64-0.25.12.tgz\",\n      \"integrity\": \"sha512-Ld5pTlzPy3YwGec4OuHh1aCVCRvOXdH8DgRjfDy/oumVovmuSzWfnSJg+VtakB9Cm0gxNO9BzWkj6mtO1FMXkQ==\",\n      \"cpu\": [\n        \"x64\"\n      ],\n      \"dev\": true,",
+    "token_count": 132
+  },
+  {
+    "id": 39,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 376,
+    "line_end": 395,
+    "text": "      \"integrity\": \"sha512-Ld5pTlzPy3YwGec4OuHh1aCVCRvOXdH8DgRjfDy/oumVovmuSzWfnSJg+VtakB9Cm0gxNO9BzWkj6mtO1FMXkQ==\",\n      \"cpu\": [\n        \"x64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"netbsd\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/openbsd-arm64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/openbsd-arm64/-/openbsd-arm64-0.25.12.tgz\",\n      \"integrity\": \"sha512-fF96T6KsBo/pkQI950FARU9apGNTSlZGsv1jZBAlcLL1MLjLNIWPBkj5NlSz8aAzYKg+eNqknrUJ24QBybeR5A==\",\n      \"cpu\": [\n        \"arm64\"",
+    "token_count": 160
+  },
+  {
+    "id": 40,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 391,
+    "line_end": 410,
+    "text": "      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/openbsd-arm64/-/openbsd-arm64-0.25.12.tgz\",\n      \"integrity\": \"sha512-fF96T6KsBo/pkQI950FARU9apGNTSlZGsv1jZBAlcLL1MLjLNIWPBkj5NlSz8aAzYKg+eNqknrUJ24QBybeR5A==\",\n      \"cpu\": [\n        \"arm64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"openbsd\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/openbsd-x64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/openbsd-x64/-/openbsd-x64-0.25.12.tgz\",\n      \"integrity\": \"sha512-MZyXUkZHjQxUvzK7rN8DJ3SRmrVrke8ZyRusHlP+kuwqTcfWLyqMOE3sScPPyeIXN/mDJIfGXvcMqCgYKekoQw==\",",
+    "token_count": 184
+  },
+  {
+    "id": 41,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 406,
+    "line_end": 425,
+    "text": "    },\n    \"node_modules/@esbuild/openbsd-x64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/openbsd-x64/-/openbsd-x64-0.25.12.tgz\",\n      \"integrity\": \"sha512-MZyXUkZHjQxUvzK7rN8DJ3SRmrVrke8ZyRusHlP+kuwqTcfWLyqMOE3sScPPyeIXN/mDJIfGXvcMqCgYKekoQw==\",\n      \"cpu\": [\n        \"x64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"openbsd\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/openharmony-arm64\": {\n      \"version\": \"0.25.12\",",
+    "token_count": 143
+  },
+  {
+    "id": 42,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 421,
+    "line_end": 440,
+    "text": "        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/openharmony-arm64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/openharmony-arm64/-/openharmony-arm64-0.25.12.tgz\",\n      \"integrity\": \"sha512-rm0YWsqUSRrjncSXGA7Zv78Nbnw4XL6/dzr20cyrQf7ZmRcsovpcRBdhD43Nuk3y7XIoW2OxMVvwuRvk9XdASg==\",\n      \"cpu\": [\n        \"arm64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"openharmony\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },",
+    "token_count": 137
+  },
+  {
+    "id": 43,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 436,
+    "line_end": 455,
+    "text": "      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/sunos-x64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/sunos-x64/-/sunos-x64-0.25.12.tgz\",\n      \"integrity\": \"sha512-3wGSCDyuTHQUzt0nV7bocDy72r2lI33QL3gkDNGkod22EsYl04sMf0qLb8luNKTOmgF/eDEDP5BFNwoBKH441w==\",\n      \"cpu\": [\n        \"x64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"sunos\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"",
+    "token_count": 133
+  },
+  {
+    "id": 44,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 451,
+    "line_end": 470,
+    "text": "      \"os\": [\n        \"sunos\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/win32-arm64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/win32-arm64/-/win32-arm64-0.25.12.tgz\",\n      \"integrity\": \"sha512-rMmLrur64A7+DKlnSuwqUdRKyd3UE7oPJZmnljqEptesKM8wx9J8gx5u0+9Pq0fQQW8vqeKebwNXdfOyP+8Bsg==\",\n      \"cpu\": [\n        \"arm64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"win32\"\n      ],",
+    "token_count": 132
+  },
+  {
+    "id": 45,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 466,
+    "line_end": 485,
+    "text": "      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"win32\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/win32-ia32\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/win32-ia32/-/win32-ia32-0.25.12.tgz\",\n      \"integrity\": \"sha512-HkqnmmBoCbCwxUKKNPBixiWDGCpQGVsrQfJoVGYLPT41XWF8lHuE5N6WhVia2n4o5QK5M4tYr21827fNhi4byQ==\",\n      \"cpu\": [\n        \"ia32\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [",
+    "token_count": 136
+  },
+  {
+    "id": 46,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 481,
+    "line_end": 500,
+    "text": "      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"win32\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@esbuild/win32-x64\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.25.12.tgz\",\n      \"integrity\": \"sha512-alJC0uCZpTFrSL0CCDjcgleBXPnCrEAhTBILpeAp7M/OFgoqtAetfBzX0xM00MUsVVPpVjlPuMbREqnZCXaTnA==\",\n      \"cpu\": [\n        \"x64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",",
+    "token_count": 133
+  },
+  {
+    "id": 47,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 496,
+    "line_end": 515,
+    "text": "      \"cpu\": [\n        \"x64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"win32\"\n      ],\n      \"engines\": {\n        \"node\": \">=18\"\n      }\n    },\n    \"node_modules/@jridgewell/sourcemap-codec\": {\n      \"version\": \"1.5.5\",\n      \"resolved\": \"https://registry.npmjs.org/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.5.5.tgz\",\n      \"integrity\": \"sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==\",\n      \"license\": \"MIT\"\n    },\n    \"node_modules/@rollup/rollup-android-arm-eabi\": {",
+    "token_count": 146
+  },
+  {
+    "id": 48,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 511,
+    "line_end": 530,
+    "text": "      \"resolved\": \"https://registry.npmjs.org/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.5.5.tgz\",\n      \"integrity\": \"sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==\",\n      \"license\": \"MIT\"\n    },\n    \"node_modules/@rollup/rollup-android-arm-eabi\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-android-arm-eabi/-/rollup-android-arm-eabi-4.60.1.tgz\",\n      \"integrity\": \"sha512-d6FinEBLdIiK+1uACUttJKfgZREXrF0Qc2SmLII7W2AD8FfiZ9Wjd+rD/iRuf5s5dWrr1GgwXCvPqOuDquOowA==\",\n      \"cpu\": [\n        \"arm\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"android\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-android-arm64\": {\n      \"version\": \"4.60.1\",",
+    "token_count": 200
+  },
+  {
+    "id": 49,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 526,
+    "line_end": 545,
+    "text": "        \"android\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-android-arm64\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-android-arm64/-/rollup-android-arm64-4.60.1.tgz\",\n      \"integrity\": \"sha512-YjG/EwIDvvYI1YvYbHvDz/BYHtkY4ygUIXHnTdLhG+hKIQFBiosfWiACWortsKPKU/+dUwQQCKQM3qrDe8c9BA==\",\n      \"cpu\": [\n        \"arm64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"android\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-darwin-arm64\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-darwin-arm64/-/rollup-darwin-arm64-4.60.1.tgz\",",
+    "token_count": 170
+  },
+  {
+    "id": 50,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 541,
+    "line_end": 560,
+    "text": "      ]\n    },\n    \"node_modules/@rollup/rollup-darwin-arm64\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-darwin-arm64/-/rollup-darwin-arm64-4.60.1.tgz\",\n      \"integrity\": \"sha512-mjCpF7GmkRtSJwon+Rq1N8+pI+8l7w5g9Z3vWj4T7abguC4Czwi3Yu/pFaLvA3TTeMVjnu3ctigusqWUfjZzvw==\",\n      \"cpu\": [\n        \"arm64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"darwin\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-darwin-x64\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-darwin-x64/-/rollup-darwin-x64-4.60.1.tgz\",\n      \"integrity\": \"sha512-haZ7hJ1JT4e9hqkoT9R/19XW2QKqjfJVv+i5AGg57S+nLk9lQnJ1F/eZloRO3o9Scy9CM3wQ9l+dkXtcBgN5Ew==\",",
+    "token_count": 193
+  },
+  {
+    "id": 51,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 556,
+    "line_end": 575,
+    "text": "    },\n    \"node_modules/@rollup/rollup-darwin-x64\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-darwin-x64/-/rollup-darwin-x64-4.60.1.tgz\",\n      \"integrity\": \"sha512-haZ7hJ1JT4e9hqkoT9R/19XW2QKqjfJVv+i5AGg57S+nLk9lQnJ1F/eZloRO3o9Scy9CM3wQ9l+dkXtcBgN5Ew==\",\n      \"cpu\": [\n        \"x64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"darwin\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-freebsd-arm64\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-freebsd-arm64/-/rollup-freebsd-arm64-4.60.1.tgz\",\n      \"integrity\": \"sha512-czw90wpQq3ZsAVBlinZjAYTKduOjTywlG7fEeWKUA7oCmpA8xdTkxZZlwNJKWqILlq0wehoZcJYfBvOyhPTQ6w==\",\n      \"cpu\": [",
+    "token_count": 195
+  },
+  {
+    "id": 52,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 571,
+    "line_end": 590,
+    "text": "    \"node_modules/@rollup/rollup-freebsd-arm64\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-freebsd-arm64/-/rollup-freebsd-arm64-4.60.1.tgz\",\n      \"integrity\": \"sha512-czw90wpQq3ZsAVBlinZjAYTKduOjTywlG7fEeWKUA7oCmpA8xdTkxZZlwNJKWqILlq0wehoZcJYfBvOyhPTQ6w==\",\n      \"cpu\": [\n        \"arm64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"freebsd\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-freebsd-x64\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-freebsd-x64/-/rollup-freebsd-x64-4.60.1.tgz\",\n      \"integrity\": \"sha512-KVB2rqsxTHuBtfOeySEyzEOB7ltlB/ux38iu2rBQzkjbwRVlkhAGIEDiiYnO2kFOkJp+Z7pUXKyrRRFuFUKt+g==\",\n      \"cpu\": [\n        \"x64\"",
+    "token_count": 198
+  },
+  {
+    "id": 53,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 586,
+    "line_end": 605,
+    "text": "      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-freebsd-x64/-/rollup-freebsd-x64-4.60.1.tgz\",\n      \"integrity\": \"sha512-KVB2rqsxTHuBtfOeySEyzEOB7ltlB/ux38iu2rBQzkjbwRVlkhAGIEDiiYnO2kFOkJp+Z7pUXKyrRRFuFUKt+g==\",\n      \"cpu\": [\n        \"x64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"freebsd\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-linux-arm-gnueabihf\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-linux-arm-gnueabihf/-/rollup-linux-arm-gnueabihf-4.60.1.tgz\",\n      \"integrity\": \"sha512-L+34Qqil+v5uC0zEubW7uByo78WOCIrBvci69E7sFASRl0X7b/MB6Cqd1lky/CtcSVTydWa2WZwFuWexjS5o6g==\",\n      \"cpu\": [\n        \"arm\"\n      ],",
+    "token_count": 192
+  },
+  {
+    "id": 54,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 601,
+    "line_end": 620,
+    "text": "      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-linux-arm-gnueabihf/-/rollup-linux-arm-gnueabihf-4.60.1.tgz\",\n      \"integrity\": \"sha512-L+34Qqil+v5uC0zEubW7uByo78WOCIrBvci69E7sFASRl0X7b/MB6Cqd1lky/CtcSVTydWa2WZwFuWexjS5o6g==\",\n      \"cpu\": [\n        \"arm\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-linux-arm-musleabihf\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-linux-arm-musleabihf/-/rollup-linux-arm-musleabihf-4.60.1.tgz\",\n      \"integrity\": \"sha512-n83O8rt4v34hgFzlkb1ycniJh7IR5RCIqt6mz1VRJD6pmhRi0CXdmfnLu9dIUS6buzh60IvACM842Ffb3xd6Gg==\",\n      \"cpu\": [\n        \"arm\"\n      ],\n      \"dev\": true,",
+    "token_count": 194
+  },
+  {
+    "id": 55,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 616,
+    "line_end": 635,
+    "text": "      \"integrity\": \"sha512-n83O8rt4v34hgFzlkb1ycniJh7IR5RCIqt6mz1VRJD6pmhRi0CXdmfnLu9dIUS6buzh60IvACM842Ffb3xd6Gg==\",\n      \"cpu\": [\n        \"arm\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-linux-arm64-gnu\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-linux-arm64-gnu/-/rollup-linux-arm64-gnu-4.60.1.tgz\",\n      \"integrity\": \"sha512-Nql7sTeAzhTAja3QXeAI48+/+GjBJ+QmAH13snn0AJSNL50JsDqotyudHyMbO2RbJkskbMbFJfIJKWA6R1LCJQ==\",\n      \"cpu\": [\n        \"arm64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",",
+    "token_count": 166
+  },
+  {
+    "id": 56,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 631,
+    "line_end": 650,
+    "text": "      \"cpu\": [\n        \"arm64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-linux-arm64-musl\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-linux-arm64-musl/-/rollup-linux-arm64-musl-4.60.1.tgz\",\n      \"integrity\": \"sha512-+pUymDhd0ys9GcKZPPWlFiZ67sTWV5UU6zOJat02M1+PiuSGDziyRuI/pPue3hoUwm2uGfxdL+trT6Z9rxnlMA==\",\n      \"cpu\": [\n        \"arm64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,",
+    "token_count": 144
+  },
+  {
+    "id": 57,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 646,
+    "line_end": 665,
+    "text": "        \"arm64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-linux-loong64-gnu\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-linux-loong64-gnu/-/rollup-linux-loong64-gnu-4.60.1.tgz\",\n      \"integrity\": \"sha512-VSvgvQeIcsEvY4bKDHEDWcpW4Yw7BtlKG1GUT4FzBUlEKQK0rWHYBqQt6Fm2taXS+1bXvJT6kICu5ZwqKCnvlQ==\",\n      \"cpu\": [\n        \"loong64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [",
+    "token_count": 145
+  },
+  {
+    "id": 58,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 661,
+    "line_end": 680,
+    "text": "      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-linux-loong64-musl\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-linux-loong64-musl/-/rollup-linux-loong64-musl-4.60.1.tgz\",\n      \"integrity\": \"sha512-4LqhUomJqwe641gsPp6xLfhqWMbQV04KtPp7/dIp0nzPxAkNY1AbwL5W0MQpcalLYk07vaW9Kp1PBhdpZYYcEw==\",\n      \"cpu\": [\n        \"loong64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"",
+    "token_count": 146
+  },
+  {
+    "id": 59,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 676,
+    "line_end": 695,
+    "text": "      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-linux-ppc64-gnu\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-linux-ppc64-gnu/-/rollup-linux-ppc64-gnu-4.60.1.tgz\",\n      \"integrity\": \"sha512-tLQQ9aPvkBxOc/EUT6j3pyeMD6Hb8QF2BTBnCQWP/uu1lhc9AIrIjKnLYMEroIz/JvtGYgI9dF3AxHZNaEH0rw==\",\n      \"cpu\": [\n        \"ppc64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ]",
+    "token_count": 143
+  },
+  {
+    "id": 60,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 691,
+    "line_end": 710,
+    "text": "      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-linux-ppc64-musl\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-linux-ppc64-musl/-/rollup-linux-ppc64-musl-4.60.1.tgz\",\n      \"integrity\": \"sha512-RMxFhJwc9fSXP6PqmAz4cbv3kAyvD1etJFjTx4ONqFP9DkTkXsAMU4v3Vyc5BgzC+anz7nS/9tp4obsKfqkDHg==\",\n      \"cpu\": [\n        \"ppc64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ]\n    },",
+    "token_count": 140
+  },
+  {
+    "id": 61,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 706,
+    "line_end": 725,
+    "text": "      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-linux-riscv64-gnu\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-linux-riscv64-gnu/-/rollup-linux-riscv64-gnu-4.60.1.tgz\",\n      \"integrity\": \"sha512-QKgFl+Yc1eEk6MmOBfRHYF6lTxiiiV3/z/BRrbSiW2I7AFTXoBFvdMEyglohPj//2mZS4hDOqeB0H1ACh3sBbg==\",\n      \"cpu\": [\n        \"riscv64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-linux-riscv64-musl\": {",
+    "token_count": 150
+  },
+  {
+    "id": 62,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 721,
+    "line_end": 740,
+    "text": "      \"os\": [\n        \"linux\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-linux-riscv64-musl\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-linux-riscv64-musl/-/rollup-linux-riscv64-musl-4.60.1.tgz\",\n      \"integrity\": \"sha512-RAjXjP/8c6ZtzatZcA1RaQr6O1TRhzC+adn8YZDnChliZHviqIjmvFwHcxi4JKPSDAt6Uhf/7vqcBzQJy0PDJg==\",\n      \"cpu\": [\n        \"riscv64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-linux-s390x-gnu\": {\n      \"version\": \"4.60.1\",",
+    "token_count": 150
+  },
+  {
+    "id": 63,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 736,
+    "line_end": 755,
+    "text": "        \"linux\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-linux-s390x-gnu\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-linux-s390x-gnu/-/rollup-linux-s390x-gnu-4.60.1.tgz\",\n      \"integrity\": \"sha512-wcuocpaOlaL1COBYiA89O6yfjlp3RwKDeTIA0hM7OpmhR1Bjo9j31G1uQVpDlTvwxGn2nQs65fBFL5UFd76FcQ==\",\n      \"cpu\": [\n        \"s390x\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-linux-x64-gnu\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-linux-x64-gnu/-/rollup-linux-x64-gnu-4.60.1.tgz\",",
+    "token_count": 171
+  },
+  {
+    "id": 64,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 751,
+    "line_end": 770,
+    "text": "      ]\n    },\n    \"node_modules/@rollup/rollup-linux-x64-gnu\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-linux-x64-gnu/-/rollup-linux-x64-gnu-4.60.1.tgz\",\n      \"integrity\": \"sha512-77PpsFQUCOiZR9+LQEFg9GClyfkNXj1MP6wRnzYs0EeWbPcHs02AXu4xuUbM1zhwn3wqaizle3AEYg5aeoohhg==\",\n      \"cpu\": [\n        \"x64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-linux-x64-musl\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-linux-x64-musl/-/rollup-linux-x64-musl-4.60.1.tgz\",\n      \"integrity\": \"sha512-5cIATbk5vynAjqqmyBjlciMJl1+R/CwX9oLk/EyiFXDWd95KpHdrOJT//rnUl4cUcskrd0jCCw3wpZnhIHdD9w==\",",
+    "token_count": 196
+  },
+  {
+    "id": 65,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 766,
+    "line_end": 785,
+    "text": "    },\n    \"node_modules/@rollup/rollup-linux-x64-musl\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-linux-x64-musl/-/rollup-linux-x64-musl-4.60.1.tgz\",\n      \"integrity\": \"sha512-5cIATbk5vynAjqqmyBjlciMJl1+R/CwX9oLk/EyiFXDWd95KpHdrOJT//rnUl4cUcskrd0jCCw3wpZnhIHdD9w==\",\n      \"cpu\": [\n        \"x64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"linux\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-openbsd-x64\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-openbsd-x64/-/rollup-openbsd-x64-4.60.1.tgz\",\n      \"integrity\": \"sha512-cl0w09WsCi17mcmWqqglez9Gk8isgeWvoUZ3WiJFYSR3zjBQc2J5/ihSjpl+VLjPqjQ/1hJRcqBfLjssREQILw==\",\n      \"cpu\": [",
+    "token_count": 196
+  },
+  {
+    "id": 66,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 781,
+    "line_end": 800,
+    "text": "    \"node_modules/@rollup/rollup-openbsd-x64\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-openbsd-x64/-/rollup-openbsd-x64-4.60.1.tgz\",\n      \"integrity\": \"sha512-cl0w09WsCi17mcmWqqglez9Gk8isgeWvoUZ3WiJFYSR3zjBQc2J5/ihSjpl+VLjPqjQ/1hJRcqBfLjssREQILw==\",\n      \"cpu\": [\n        \"x64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"openbsd\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-openharmony-arm64\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-openharmony-arm64/-/rollup-openharmony-arm64-4.60.1.tgz\",\n      \"integrity\": \"sha512-4Cv23ZrONRbNtbZa37mLSueXUCtN7MXccChtKpUnQNgF010rjrjfHx3QxkS2PI7LqGT5xXyYs1a7LbzAwT0iCA==\",\n      \"cpu\": [\n        \"arm64\"",
+    "token_count": 201
+  },
+  {
+    "id": 67,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 796,
+    "line_end": 815,
+    "text": "      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-openharmony-arm64/-/rollup-openharmony-arm64-4.60.1.tgz\",\n      \"integrity\": \"sha512-4Cv23ZrONRbNtbZa37mLSueXUCtN7MXccChtKpUnQNgF010rjrjfHx3QxkS2PI7LqGT5xXyYs1a7LbzAwT0iCA==\",\n      \"cpu\": [\n        \"arm64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"openharmony\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-win32-arm64-msvc\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-win32-arm64-msvc/-/rollup-win32-arm64-msvc-4.60.1.tgz\",\n      \"integrity\": \"sha512-i1okWYkA4FJICtr7KpYzFpRTHgy5jdDbZiWfvny21iIKky5YExiDXP+zbXzm3dUcFpkEeYNHgQ5fuG236JPq0g==\",\n      \"cpu\": [\n        \"arm64\"\n      ],",
+    "token_count": 195
+  },
+  {
+    "id": 68,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 811,
+    "line_end": 830,
+    "text": "      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-win32-arm64-msvc/-/rollup-win32-arm64-msvc-4.60.1.tgz\",\n      \"integrity\": \"sha512-i1okWYkA4FJICtr7KpYzFpRTHgy5jdDbZiWfvny21iIKky5YExiDXP+zbXzm3dUcFpkEeYNHgQ5fuG236JPq0g==\",\n      \"cpu\": [\n        \"arm64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"win32\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-win32-ia32-msvc\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-win32-ia32-msvc/-/rollup-win32-ia32-msvc-4.60.1.tgz\",\n      \"integrity\": \"sha512-u09m3CuwLzShA0EYKMNiFgcjjzwqtUMLmuCJLeZWjjOYA3IT2Di09KaxGBTP9xVztWyIWjVdsB2E9goMjZvTQg==\",\n      \"cpu\": [\n        \"ia32\"\n      ],\n      \"dev\": true,",
+    "token_count": 190
+  },
+  {
+    "id": 69,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 826,
+    "line_end": 845,
+    "text": "      \"integrity\": \"sha512-u09m3CuwLzShA0EYKMNiFgcjjzwqtUMLmuCJLeZWjjOYA3IT2Di09KaxGBTP9xVztWyIWjVdsB2E9goMjZvTQg==\",\n      \"cpu\": [\n        \"ia32\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"win32\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-win32-x64-gnu\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-win32-x64-gnu/-/rollup-win32-x64-gnu-4.60.1.tgz\",\n      \"integrity\": \"sha512-k+600V9Zl1CM7eZxJgMyTUzmrmhB/0XZnF4pRypKAlAgxmedUA+1v9R+XOFv56W4SlHEzfeMtzujLJD22Uz5zg==\",\n      \"cpu\": [\n        \"x64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",",
+    "token_count": 164
+  },
+  {
+    "id": 70,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 841,
+    "line_end": 860,
+    "text": "      \"cpu\": [\n        \"x64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"win32\"\n      ]\n    },\n    \"node_modules/@rollup/rollup-win32-x64-msvc\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.60.1.tgz\",\n      \"integrity\": \"sha512-lWMnixq/QzxyhTV6NjQJ4SFo1J6PvOX8vUx5Wb4bBPsEb+8xZ89Bz6kOXpfXj9ak9AHTQVQzlgzBEc1SyM27xQ==\",\n      \"cpu\": [\n        \"x64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,",
+    "token_count": 141
+  },
+  {
+    "id": 71,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 856,
+    "line_end": 875,
+    "text": "        \"x64\"\n      ],\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"win32\"\n      ]\n    },\n    \"node_modules/@types/estree\": {\n      \"version\": \"1.0.8\",\n      \"resolved\": \"https://registry.npmjs.org/@types/estree/-/estree-1.0.8.tgz\",\n      \"integrity\": \"sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==\",\n      \"dev\": true,\n      \"license\": \"MIT\"\n    },\n    \"node_modules/@vitejs/plugin-vue\": {\n      \"version\": \"5.2.4\",\n      \"resolved\": \"https://registry.npmjs.org/@vitejs/plugin-vue/-/plugin-vue-5.2.4.tgz\",\n      \"integrity\": \"sha512-7Yx/SXSOcQq5HiiV3orevHUFn+pmMB4cgbEkDYgnkUWb0WfeQ/wa2yFv6D5ICiCQOVpjA7vYDXrC7AGO8yjDHA==\",",
+    "token_count": 180
+  },
+  {
+    "id": 72,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 871,
+    "line_end": 890,
+    "text": "    },\n    \"node_modules/@vitejs/plugin-vue\": {\n      \"version\": \"5.2.4\",\n      \"resolved\": \"https://registry.npmjs.org/@vitejs/plugin-vue/-/plugin-vue-5.2.4.tgz\",\n      \"integrity\": \"sha512-7Yx/SXSOcQq5HiiV3orevHUFn+pmMB4cgbEkDYgnkUWb0WfeQ/wa2yFv6D5ICiCQOVpjA7vYDXrC7AGO8yjDHA==\",\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"engines\": {\n        \"node\": \"^18.0.0 || >=20.0.0\"\n      },\n      \"peerDependencies\": {\n        \"vite\": \"^5.0.0 || ^6.0.0\",\n        \"vue\": \"^3.2.25\"\n      }\n    },\n    \"node_modules/@volar/language-core\": {\n      \"version\": \"2.4.15\",\n      \"resolved\": \"https://registry.npmjs.org/@volar/language-core/-/language-core-2.4.15.tgz\",\n      \"integrity\": \"sha512-3VHw+QZU0ZG9IuQmzT68IyN4hZNd9GchGPhbD9+pa8CVv7rnoOZwo7T8weIbrRmihqy3ATpdfXFnqRrfPVK6CA==\",\n      \"dev\": true,",
+    "token_count": 200
+  },
+  {
+    "id": 73,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 886,
+    "line_end": 905,
+    "text": "    \"node_modules/@volar/language-core\": {\n      \"version\": \"2.4.15\",\n      \"resolved\": \"https://registry.npmjs.org/@volar/language-core/-/language-core-2.4.15.tgz\",\n      \"integrity\": \"sha512-3VHw+QZU0ZG9IuQmzT68IyN4hZNd9GchGPhbD9+pa8CVv7rnoOZwo7T8weIbrRmihqy3ATpdfXFnqRrfPVK6CA==\",\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@volar/source-map\": \"2.4.15\"\n      }\n    },\n    \"node_modules/@volar/source-map\": {\n      \"version\": \"2.4.15\",\n      \"resolved\": \"https://registry.npmjs.org/@volar/source-map/-/source-map-2.4.15.tgz\",\n      \"integrity\": \"sha512-CPbMWlUN6hVZJYGcU/GSoHu4EnCHiLaXI9n8c9la6RaI9W5JHX+NqG+GSQcB0JdC2FIBLdZJwGsfKyBB71VlTg==\",\n      \"dev\": true,\n      \"license\": \"MIT\"\n    },\n    \"node_modules/@volar/typescript\": {\n      \"version\": \"2.4.15\",\n      \"resolved\": \"https://registry.npmjs.org/@volar/typescript/-/typescript-2.4.15.tgz\",",
+    "token_count": 221
+  },
+  {
+    "id": 74,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 901,
+    "line_end": 920,
+    "text": "      \"license\": \"MIT\"\n    },\n    \"node_modules/@volar/typescript\": {\n      \"version\": \"2.4.15\",\n      \"resolved\": \"https://registry.npmjs.org/@volar/typescript/-/typescript-2.4.15.tgz\",\n      \"integrity\": \"sha512-2aZ8i0cqPGjXb4BhkMsPYDkkuc2ZQ6yOpqwAuNwUoncELqoy5fRgOQtLR9gB0g902iS0NAkvpIzs27geVyVdPg==\",\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@volar/language-core\": \"2.4.15\",\n        \"path-browserify\": \"^1.0.1\",\n        \"vscode-uri\": \"^3.0.8\"\n      }\n    },\n    \"node_modules/@vue/compiler-core\": {\n      \"version\": \"3.5.32\",\n      \"resolved\": \"https://registry.npmjs.org/@vue/compiler-core/-/compiler-core-3.5.32.tgz\",\n      \"integrity\": \"sha512-4x74Tbtqnda8s/NSD6e1Dr5p1c8HdMU5RWSjMSUzb8RTcUQqevDCxVAitcLBKT+ie3o0Dl9crc/S/opJM7qBGQ==\",\n      \"license\": \"MIT\",\n      \"dependencies\": {",
+    "token_count": 206
+  },
+  {
+    "id": 75,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 916,
+    "line_end": 935,
+    "text": "      \"version\": \"3.5.32\",\n      \"resolved\": \"https://registry.npmjs.org/@vue/compiler-core/-/compiler-core-3.5.32.tgz\",\n      \"integrity\": \"sha512-4x74Tbtqnda8s/NSD6e1Dr5p1c8HdMU5RWSjMSUzb8RTcUQqevDCxVAitcLBKT+ie3o0Dl9crc/S/opJM7qBGQ==\",\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@babel/parser\": \"^7.29.2\",\n        \"@vue/shared\": \"3.5.32\",\n        \"entities\": \"^7.0.1\",\n        \"estree-walker\": \"^2.0.2\",\n        \"source-map-js\": \"^1.2.1\"\n      }\n    },\n    \"node_modules/@vue/compiler-dom\": {\n      \"version\": \"3.5.32\",\n      \"resolved\": \"https://registry.npmjs.org/@vue/compiler-dom/-/compiler-dom-3.5.32.tgz\",\n      \"integrity\": \"sha512-ybHAu70NtiEI1fvAUz3oXZqkUYEe5J98GjMDpTGl5iHb0T15wQYLR4wE3h9xfuTNA+Cm2f4czfe8B4s+CCH57Q==\",\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@vue/compiler-core\": \"3.5.32\",\n        \"@vue/shared\": \"3.5.32\"",
+    "token_count": 217
+  },
+  {
+    "id": 76,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 931,
+    "line_end": 950,
+    "text": "      \"integrity\": \"sha512-ybHAu70NtiEI1fvAUz3oXZqkUYEe5J98GjMDpTGl5iHb0T15wQYLR4wE3h9xfuTNA+Cm2f4czfe8B4s+CCH57Q==\",\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@vue/compiler-core\": \"3.5.32\",\n        \"@vue/shared\": \"3.5.32\"\n      }\n    },\n    \"node_modules/@vue/compiler-sfc\": {\n      \"version\": \"3.5.32\",\n      \"resolved\": \"https://registry.npmjs.org/@vue/compiler-sfc/-/compiler-sfc-3.5.32.tgz\",\n      \"integrity\": \"sha512-8UYUYo71cP/0YHMO814TRZlPuUUw3oifHuMR7Wp9SNoRSrxRQnhMLNlCeaODNn6kNTJsjFoQ/kqIj4qGvya4Xg==\",\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@babel/parser\": \"^7.29.2\",\n        \"@vue/compiler-core\": \"3.5.32\",\n        \"@vue/compiler-dom\": \"3.5.32\",\n        \"@vue/compiler-ssr\": \"3.5.32\",\n        \"@vue/shared\": \"3.5.32\",\n        \"estree-walker\": \"^2.0.2\",\n        \"magic-string\": \"^0.30.21\",",
+    "token_count": 209
+  },
+  {
+    "id": 77,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 946,
+    "line_end": 965,
+    "text": "        \"@vue/compiler-dom\": \"3.5.32\",\n        \"@vue/compiler-ssr\": \"3.5.32\",\n        \"@vue/shared\": \"3.5.32\",\n        \"estree-walker\": \"^2.0.2\",\n        \"magic-string\": \"^0.30.21\",\n        \"postcss\": \"^8.5.8\",\n        \"source-map-js\": \"^1.2.1\"\n      }\n    },\n    \"node_modules/@vue/compiler-ssr\": {\n      \"version\": \"3.5.32\",\n      \"resolved\": \"https://registry.npmjs.org/@vue/compiler-ssr/-/compiler-ssr-3.5.32.tgz\",\n      \"integrity\": \"sha512-Gp4gTs22T3DgRotZ8aA/6m2jMR+GMztvBXUBEUOYOcST+giyGWJ4WvFd7QLHBkzTxkfOt8IELKNdpzITLbA2rw==\",\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@vue/compiler-dom\": \"3.5.32\",\n        \"@vue/shared\": \"3.5.32\"\n      }\n    },\n    \"node_modules/@vue/compiler-vue2\": {",
+    "token_count": 178
+  },
+  {
+    "id": 78,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 961,
+    "line_end": 980,
+    "text": "        \"@vue/compiler-dom\": \"3.5.32\",\n        \"@vue/shared\": \"3.5.32\"\n      }\n    },\n    \"node_modules/@vue/compiler-vue2\": {\n      \"version\": \"2.7.16\",\n      \"resolved\": \"https://registry.npmjs.org/@vue/compiler-vue2/-/compiler-vue2-2.7.16.tgz\",\n      \"integrity\": \"sha512-qYC3Psj9S/mfu9uVi5WvNZIzq+xnXMhOwbTFKKDD7b1lhpnn71jXSFdTQ+WsIEk0ONCd7VV2IMm7ONl6tbQ86A==\",\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"de-indent\": \"^1.0.2\",\n        \"he\": \"^1.2.0\"\n      }\n    },\n    \"node_modules/@vue/devtools-api\": {\n      \"version\": \"6.6.4\",\n      \"resolved\": \"https://registry.npmjs.org/@vue/devtools-api/-/devtools-api-6.6.4.tgz\",\n      \"integrity\": \"sha512-sGhTPMuXqZ1rVOk32RylztWkfXTRhuS7vgAKv0zjqk8gbsHkJ7xfFf+jbySxt7tWObEJwyKaHMikV/WGDiQm8g==\",\n      \"license\": \"MIT\"",
+    "token_count": 200
+  },
+  {
+    "id": 79,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 976,
+    "line_end": 995,
+    "text": "    \"node_modules/@vue/devtools-api\": {\n      \"version\": \"6.6.4\",\n      \"resolved\": \"https://registry.npmjs.org/@vue/devtools-api/-/devtools-api-6.6.4.tgz\",\n      \"integrity\": \"sha512-sGhTPMuXqZ1rVOk32RylztWkfXTRhuS7vgAKv0zjqk8gbsHkJ7xfFf+jbySxt7tWObEJwyKaHMikV/WGDiQm8g==\",\n      \"license\": \"MIT\"\n    },\n    \"node_modules/@vue/language-core\": {\n      \"version\": \"2.2.12\",\n      \"resolved\": \"https://registry.npmjs.org/@vue/language-core/-/language-core-2.2.12.tgz\",\n      \"integrity\": \"sha512-IsGljWbKGU1MZpBPN+BvPAdr55YPkj2nB/TBNGNC32Vy2qLG25DYu/NBN2vNtZqdRbTRjaoYrahLrToim2NanA==\",\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@volar/language-core\": \"2.4.15\",\n        \"@vue/compiler-dom\": \"^3.5.0\",\n        \"@vue/compiler-vue2\": \"^2.7.16\",\n        \"@vue/shared\": \"^3.5.0\",\n        \"alien-signals\": \"^1.0.3\",\n        \"minimatch\": \"^9.0.3\",\n        \"muggle-string\": \"^0.4.1\",",
+    "token_count": 227
+  },
+  {
+    "id": 80,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 991,
+    "line_end": 1010,
+    "text": "        \"@vue/compiler-vue2\": \"^2.7.16\",\n        \"@vue/shared\": \"^3.5.0\",\n        \"alien-signals\": \"^1.0.3\",\n        \"minimatch\": \"^9.0.3\",\n        \"muggle-string\": \"^0.4.1\",\n        \"path-browserify\": \"^1.0.1\"\n      },\n      \"peerDependencies\": {\n        \"typescript\": \"*\"\n      },\n      \"peerDependenciesMeta\": {\n        \"typescript\": {\n          \"optional\": true\n        }\n      }\n    },\n    \"node_modules/@vue/reactivity\": {\n      \"version\": \"3.5.32\",\n      \"resolved\": \"https://registry.npmjs.org/@vue/reactivity/-/reactivity-3.5.32.tgz\",\n      \"integrity\": \"sha512-/ORasxSGvZ6MN5gc+uE364SxFdJ0+WqVG0CENXaGW58TOCdrAW76WWaplDtECeS1qphvtBZtR+3/o1g1zL4xPQ==\",",
+    "token_count": 166
+  },
+  {
+    "id": 81,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1006,
+    "line_end": 1025,
+    "text": "    },\n    \"node_modules/@vue/reactivity\": {\n      \"version\": \"3.5.32\",\n      \"resolved\": \"https://registry.npmjs.org/@vue/reactivity/-/reactivity-3.5.32.tgz\",\n      \"integrity\": \"sha512-/ORasxSGvZ6MN5gc+uE364SxFdJ0+WqVG0CENXaGW58TOCdrAW76WWaplDtECeS1qphvtBZtR+3/o1g1zL4xPQ==\",\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@vue/shared\": \"3.5.32\"\n      }\n    },\n    \"node_modules/@vue/runtime-core\": {\n      \"version\": \"3.5.32\",\n      \"resolved\": \"https://registry.npmjs.org/@vue/runtime-core/-/runtime-core-3.5.32.tgz\",\n      \"integrity\": \"sha512-pDrXCejn4UpFDFmMd27AcJEbHaLemaE5o4pbb7sLk79SRIhc6/t34BQA7SGNgYtbMnvbF/HHOftYBgFJtUoJUQ==\",\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@vue/reactivity\": \"3.5.32\",\n        \"@vue/shared\": \"3.5.32\"\n      }\n    },",
+    "token_count": 196
+  },
+  {
+    "id": 82,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1021,
+    "line_end": 1040,
+    "text": "      \"dependencies\": {\n        \"@vue/reactivity\": \"3.5.32\",\n        \"@vue/shared\": \"3.5.32\"\n      }\n    },\n    \"node_modules/@vue/runtime-dom\": {\n      \"version\": \"3.5.32\",\n      \"resolved\": \"https://registry.npmjs.org/@vue/runtime-dom/-/runtime-dom-3.5.32.tgz\",\n      \"integrity\": \"sha512-1CDVv7tv/IV13V8Nip1k/aaObVbWqRlVCVezTwx3K07p7Vxossp5JU1dcPNhJk3w347gonIUT9jQOGutyJrSVQ==\",\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@vue/reactivity\": \"3.5.32\",\n        \"@vue/runtime-core\": \"3.5.32\",\n        \"@vue/shared\": \"3.5.32\",\n        \"csstype\": \"^3.2.3\"\n      }\n    },\n    \"node_modules/@vue/server-renderer\": {\n      \"version\": \"3.5.32\",\n      \"resolved\": \"https://registry.npmjs.org/@vue/server-renderer/-/server-renderer-3.5.32.tgz\",",
+    "token_count": 188
+  },
+  {
+    "id": 83,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1036,
+    "line_end": 1055,
+    "text": "      }\n    },\n    \"node_modules/@vue/server-renderer\": {\n      \"version\": \"3.5.32\",\n      \"resolved\": \"https://registry.npmjs.org/@vue/server-renderer/-/server-renderer-3.5.32.tgz\",\n      \"integrity\": \"sha512-IOjm2+JQwRFS7W28HNuJeXQle9KdZbODFY7hFGVtnnghF51ta20EWAZJHX+zLGtsHhaU6uC9BGPV52KVpYryMQ==\",\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@vue/compiler-ssr\": \"3.5.32\",\n        \"@vue/shared\": \"3.5.32\"\n      },\n      \"peerDependencies\": {\n        \"vue\": \"3.5.32\"\n      }\n    },\n    \"node_modules/@vue/shared\": {\n      \"version\": \"3.5.32\",\n      \"resolved\": \"https://registry.npmjs.org/@vue/shared/-/shared-3.5.32.tgz\",\n      \"integrity\": \"sha512-ksNyrmRQzWJJ8n3cRDuSF7zNNontuJg1YHnmWRJd2AMu8Ij2bqwiiri2lH5rHtYPZjj4STkNcgcmiQqlOjiYGg==\",\n      \"license\": \"MIT\"",
+    "token_count": 195
+  },
+  {
+    "id": 84,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1051,
+    "line_end": 1070,
+    "text": "    \"node_modules/@vue/shared\": {\n      \"version\": \"3.5.32\",\n      \"resolved\": \"https://registry.npmjs.org/@vue/shared/-/shared-3.5.32.tgz\",\n      \"integrity\": \"sha512-ksNyrmRQzWJJ8n3cRDuSF7zNNontuJg1YHnmWRJd2AMu8Ij2bqwiiri2lH5rHtYPZjj4STkNcgcmiQqlOjiYGg==\",\n      \"license\": \"MIT\"\n    },\n    \"node_modules/alien-signals\": {\n      \"version\": \"1.0.13\",\n      \"resolved\": \"https://registry.npmjs.org/alien-signals/-/alien-signals-1.0.13.tgz\",\n      \"integrity\": \"sha512-OGj9yyTnJEttvzhTUWuscOvtqxq5vrhF7vL9oS0xJ2mK0ItPYP1/y+vCFebfxoEyAz0++1AIwJ5CMr+Fk3nDmg==\",\n      \"dev\": true,\n      \"license\": \"MIT\"\n    },\n    \"node_modules/balanced-match\": {\n      \"version\": \"1.0.2\",\n      \"resolved\": \"https://registry.npmjs.org/balanced-match/-/balanced-match-1.0.2.tgz\",\n      \"integrity\": \"sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==\",\n      \"dev\": true,\n      \"license\": \"MIT\"\n    },",
+    "token_count": 232
+  },
+  {
+    "id": 85,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1066,
+    "line_end": 1085,
+    "text": "      \"resolved\": \"https://registry.npmjs.org/balanced-match/-/balanced-match-1.0.2.tgz\",\n      \"integrity\": \"sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==\",\n      \"dev\": true,\n      \"license\": \"MIT\"\n    },\n    \"node_modules/brace-expansion\": {\n      \"version\": \"2.1.0\",\n      \"resolved\": \"https://registry.npmjs.org/brace-expansion/-/brace-expansion-2.1.0.tgz\",\n      \"integrity\": \"sha512-TN1kCZAgdgweJhWWpgKYrQaMNHcDULHkWwQIspdtjV4Y5aurRdZpjAqn6yX3FPqTA9ngHCc4hJxMAMgGfve85w==\",\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"balanced-match\": \"^1.0.0\"\n      }\n    },\n    \"node_modules/csstype\": {\n      \"version\": \"3.2.3\",\n      \"resolved\": \"https://registry.npmjs.org/csstype/-/csstype-3.2.3.tgz\",\n      \"integrity\": \"sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==\",\n      \"license\": \"MIT\"",
+    "token_count": 230
+  },
+  {
+    "id": 86,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1081,
+    "line_end": 1100,
+    "text": "    \"node_modules/csstype\": {\n      \"version\": \"3.2.3\",\n      \"resolved\": \"https://registry.npmjs.org/csstype/-/csstype-3.2.3.tgz\",\n      \"integrity\": \"sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==\",\n      \"license\": \"MIT\"\n    },\n    \"node_modules/de-indent\": {\n      \"version\": \"1.0.2\",\n      \"resolved\": \"https://registry.npmjs.org/de-indent/-/de-indent-1.0.2.tgz\",\n      \"integrity\": \"sha512-e/1zu3xH5MQryN2zdVaF0OrdNLUbvWxzMbi+iNA6Bky7l1RoP8a2fIbRocyHclXt/arDrrR6lL3TqFD9pMQTsg==\",\n      \"dev\": true,\n      \"license\": \"MIT\"\n    },\n    \"node_modules/entities\": {\n      \"version\": \"7.0.1\",\n      \"resolved\": \"https://registry.npmjs.org/entities/-/entities-7.0.1.tgz\",\n      \"integrity\": \"sha512-TWrgLOFUQTH994YUyl1yT4uyavY5nNB5muff+RtWaqNVCAK408b5ZnnbNAUEWLTCpum9w6arT70i1XdQ4UeOPA==\",\n      \"license\": \"BSD-2-Clause\",\n      \"engines\": {\n        \"node\": \">=0.12\"",
+    "token_count": 229
+  },
+  {
+    "id": 87,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1096,
+    "line_end": 1115,
+    "text": "      \"resolved\": \"https://registry.npmjs.org/entities/-/entities-7.0.1.tgz\",\n      \"integrity\": \"sha512-TWrgLOFUQTH994YUyl1yT4uyavY5nNB5muff+RtWaqNVCAK408b5ZnnbNAUEWLTCpum9w6arT70i1XdQ4UeOPA==\",\n      \"license\": \"BSD-2-Clause\",\n      \"engines\": {\n        \"node\": \">=0.12\"\n      },\n      \"funding\": {\n        \"url\": \"https://github.com/fb55/entities?sponsor=1\"\n      }\n    },\n    \"node_modules/esbuild\": {\n      \"version\": \"0.25.12\",\n      \"resolved\": \"https://registry.npmjs.org/esbuild/-/esbuild-0.25.12.tgz\",\n      \"integrity\": \"sha512-bbPBYYrtZbkt6Os6FiTLCTFxvq4tt3JKall1vRwshA3fdVztsLAatFaZobhkBC8/BrPetoa0oksYoKXoG4ryJg==\",\n      \"dev\": true,\n      \"hasInstallScript\": true,\n      \"license\": \"MIT\",\n      \"bin\": {\n        \"esbuild\": \"bin/esbuild\"\n      },",
+    "token_count": 191
+  },
+  {
+    "id": 88,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1111,
+    "line_end": 1130,
+    "text": "      \"hasInstallScript\": true,\n      \"license\": \"MIT\",\n      \"bin\": {\n        \"esbuild\": \"bin/esbuild\"\n      },\n      \"engines\": {\n        \"node\": \">=18\"\n      },\n      \"optionalDependencies\": {\n        \"@esbuild/aix-ppc64\": \"0.25.12\",\n        \"@esbuild/android-arm\": \"0.25.12\",\n        \"@esbuild/android-arm64\": \"0.25.12\",\n        \"@esbuild/android-x64\": \"0.25.12\",\n        \"@esbuild/darwin-arm64\": \"0.25.12\",\n        \"@esbuild/darwin-x64\": \"0.25.12\",\n        \"@esbuild/freebsd-arm64\": \"0.25.12\",\n        \"@esbuild/freebsd-x64\": \"0.25.12\",\n        \"@esbuild/linux-arm\": \"0.25.12\",\n        \"@esbuild/linux-arm64\": \"0.25.12\",\n        \"@esbuild/linux-ia32\": \"0.25.12\",",
+    "token_count": 167
+  },
+  {
+    "id": 89,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1126,
+    "line_end": 1145,
+    "text": "        \"@esbuild/freebsd-arm64\": \"0.25.12\",\n        \"@esbuild/freebsd-x64\": \"0.25.12\",\n        \"@esbuild/linux-arm\": \"0.25.12\",\n        \"@esbuild/linux-arm64\": \"0.25.12\",\n        \"@esbuild/linux-ia32\": \"0.25.12\",\n        \"@esbuild/linux-loong64\": \"0.25.12\",\n        \"@esbuild/linux-mips64el\": \"0.25.12\",\n        \"@esbuild/linux-ppc64\": \"0.25.12\",\n        \"@esbuild/linux-riscv64\": \"0.25.12\",\n        \"@esbuild/linux-s390x\": \"0.25.12\",\n        \"@esbuild/linux-x64\": \"0.25.12\",\n        \"@esbuild/netbsd-arm64\": \"0.25.12\",\n        \"@esbuild/netbsd-x64\": \"0.25.12\",\n        \"@esbuild/openbsd-arm64\": \"0.25.12\",\n        \"@esbuild/openbsd-x64\": \"0.25.12\",\n        \"@esbuild/openharmony-arm64\": \"0.25.12\",\n        \"@esbuild/sunos-x64\": \"0.25.12\",\n        \"@esbuild/win32-arm64\": \"0.25.12\",\n        \"@esbuild/win32-ia32\": \"0.25.12\",\n        \"@esbuild/win32-x64\": \"0.25.12\"",
+    "token_count": 217
+  },
+  {
+    "id": 90,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1141,
+    "line_end": 1160,
+    "text": "        \"@esbuild/openharmony-arm64\": \"0.25.12\",\n        \"@esbuild/sunos-x64\": \"0.25.12\",\n        \"@esbuild/win32-arm64\": \"0.25.12\",\n        \"@esbuild/win32-ia32\": \"0.25.12\",\n        \"@esbuild/win32-x64\": \"0.25.12\"\n      }\n    },\n    \"node_modules/estree-walker\": {\n      \"version\": \"2.0.2\",\n      \"resolved\": \"https://registry.npmjs.org/estree-walker/-/estree-walker-2.0.2.tgz\",\n      \"integrity\": \"sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==\",\n      \"license\": \"MIT\"\n    },\n    \"node_modules/fdir\": {\n      \"version\": \"6.5.0\",\n      \"resolved\": \"https://registry.npmjs.org/fdir/-/fdir-6.5.0.tgz\",\n      \"integrity\": \"sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==\",\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"engines\": {",
+    "token_count": 208
+  },
+  {
+    "id": 91,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1156,
+    "line_end": 1175,
+    "text": "      \"resolved\": \"https://registry.npmjs.org/fdir/-/fdir-6.5.0.tgz\",\n      \"integrity\": \"sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==\",\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"engines\": {\n        \"node\": \">=12.0.0\"\n      },\n      \"peerDependencies\": {\n        \"picomatch\": \"^3 || ^4\"\n      },\n      \"peerDependenciesMeta\": {\n        \"picomatch\": {\n          \"optional\": true\n        }\n      }\n    },\n    \"node_modules/fsevents\": {\n      \"version\": \"2.3.3\",\n      \"resolved\": \"https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz\",\n      \"integrity\": \"sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==\",",
+    "token_count": 179
+  },
+  {
+    "id": 92,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1171,
+    "line_end": 1190,
+    "text": "    },\n    \"node_modules/fsevents\": {\n      \"version\": \"2.3.3\",\n      \"resolved\": \"https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz\",\n      \"integrity\": \"sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==\",\n      \"dev\": true,\n      \"hasInstallScript\": true,\n      \"license\": \"MIT\",\n      \"optional\": true,\n      \"os\": [\n        \"darwin\"\n      ],\n      \"engines\": {\n        \"node\": \"^8.16.0 || ^10.6.0 || >=11.0.0\"\n      }\n    },\n    \"node_modules/he\": {\n      \"version\": \"1.2.0\",\n      \"resolved\": \"https://registry.npmjs.org/he/-/he-1.2.0.tgz\",\n      \"integrity\": \"sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==\",",
+    "token_count": 179
+  },
+  {
+    "id": 93,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1186,
+    "line_end": 1205,
+    "text": "    },\n    \"node_modules/he\": {\n      \"version\": \"1.2.0\",\n      \"resolved\": \"https://registry.npmjs.org/he/-/he-1.2.0.tgz\",\n      \"integrity\": \"sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==\",\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"bin\": {\n        \"he\": \"bin/he\"\n      }\n    },\n    \"node_modules/magic-string\": {\n      \"version\": \"0.30.21\",\n      \"resolved\": \"https://registry.npmjs.org/magic-string/-/magic-string-0.30.21.tgz\",\n      \"integrity\": \"sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==\",\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@jridgewell/sourcemap-codec\": \"^1.5.5\"\n      }\n    },",
+    "token_count": 180
+  },
+  {
+    "id": 94,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1201,
+    "line_end": 1220,
+    "text": "      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@jridgewell/sourcemap-codec\": \"^1.5.5\"\n      }\n    },\n    \"node_modules/minimatch\": {\n      \"version\": \"9.0.9\",\n      \"resolved\": \"https://registry.npmjs.org/minimatch/-/minimatch-9.0.9.tgz\",\n      \"integrity\": \"sha512-OBwBN9AL4dqmETlpS2zasx+vTeWclWzkblfZk7KTA5j3jeOONz/tRCnZomUyvNg83wL5Zv9Ss6HMJXAgL8R2Yg==\",\n      \"dev\": true,\n      \"license\": \"ISC\",\n      \"dependencies\": {\n        \"brace-expansion\": \"^2.0.2\"\n      },\n      \"engines\": {\n        \"node\": \">=16 || 14 >=14.17\"\n      },\n      \"funding\": {\n        \"url\": \"https://github.com/sponsors/isaacs\"\n      }",
+    "token_count": 156
+  },
+  {
+    "id": 95,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1216,
+    "line_end": 1235,
+    "text": "        \"node\": \">=16 || 14 >=14.17\"\n      },\n      \"funding\": {\n        \"url\": \"https://github.com/sponsors/isaacs\"\n      }\n    },\n    \"node_modules/muggle-string\": {\n      \"version\": \"0.4.1\",\n      \"resolved\": \"https://registry.npmjs.org/muggle-string/-/muggle-string-0.4.1.tgz\",\n      \"integrity\": \"sha512-VNTrAak/KhO2i8dqqnqnAHOa3cYBwXEZe9h+D5h/1ZqFSTEFHdM65lR7RoIqq3tBBYavsOXV84NoHXZ0AkPyqQ==\",\n      \"dev\": true,\n      \"license\": \"MIT\"\n    },\n    \"node_modules/nanoid\": {\n      \"version\": \"3.3.11\",\n      \"resolved\": \"https://registry.npmjs.org/nanoid/-/nanoid-3.3.11.tgz\",\n      \"integrity\": \"sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==\",\n      \"funding\": [\n        {\n          \"type\": \"github\",",
+    "token_count": 189
+  },
+  {
+    "id": 96,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1231,
+    "line_end": 1250,
+    "text": "      \"resolved\": \"https://registry.npmjs.org/nanoid/-/nanoid-3.3.11.tgz\",\n      \"integrity\": \"sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==\",\n      \"funding\": [\n        {\n          \"type\": \"github\",\n          \"url\": \"https://github.com/sponsors/ai\"\n        }\n      ],\n      \"license\": \"MIT\",\n      \"bin\": {\n        \"nanoid\": \"bin/nanoid.cjs\"\n      },\n      \"engines\": {\n        \"node\": \"^10 || ^12 || ^13.7 || ^14 || >=15.0.1\"\n      }\n    },\n    \"node_modules/path-browserify\": {\n      \"version\": \"1.0.1\",\n      \"resolved\": \"https://registry.npmjs.org/path-browserify/-/path-browserify-1.0.1.tgz\",\n      \"integrity\": \"sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==\",",
+    "token_count": 192
+  },
+  {
+    "id": 97,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1246,
+    "line_end": 1265,
+    "text": "    },\n    \"node_modules/path-browserify\": {\n      \"version\": \"1.0.1\",\n      \"resolved\": \"https://registry.npmjs.org/path-browserify/-/path-browserify-1.0.1.tgz\",\n      \"integrity\": \"sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==\",\n      \"dev\": true,\n      \"license\": \"MIT\"\n    },\n    \"node_modules/picocolors\": {\n      \"version\": \"1.1.1\",\n      \"resolved\": \"https://registry.npmjs.org/picocolors/-/picocolors-1.1.1.tgz\",\n      \"integrity\": \"sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==\",\n      \"license\": \"ISC\"\n    },\n    \"node_modules/picomatch\": {\n      \"version\": \"4.0.4\",\n      \"resolved\": \"https://registry.npmjs.org/picomatch/-/picomatch-4.0.4.tgz\",\n      \"integrity\": \"sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==\",\n      \"dev\": true,\n      \"license\": \"MIT\",",
+    "token_count": 230
+  },
+  {
+    "id": 98,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1261,
+    "line_end": 1280,
+    "text": "      \"version\": \"4.0.4\",\n      \"resolved\": \"https://registry.npmjs.org/picomatch/-/picomatch-4.0.4.tgz\",\n      \"integrity\": \"sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==\",\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"engines\": {\n        \"node\": \">=12\"\n      },\n      \"funding\": {\n        \"url\": \"https://github.com/sponsors/jonschlinkert\"\n      }\n    },\n    \"node_modules/postcss\": {\n      \"version\": \"8.5.10\",\n      \"resolved\": \"https://registry.npmjs.org/postcss/-/postcss-8.5.10.tgz\",\n      \"integrity\": \"sha512-pMMHxBOZKFU6HgAZ4eyGnwXF/EvPGGqUr0MnZ5+99485wwW41kW91A4LOGxSHhgugZmSChL5AlElNdwlNgcnLQ==\",\n      \"funding\": [\n        {\n          \"type\": \"opencollective\",\n          \"url\": \"https://opencollective.com/postcss/\"",
+    "token_count": 196
+  },
+  {
+    "id": 99,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1276,
+    "line_end": 1295,
+    "text": "      \"integrity\": \"sha512-pMMHxBOZKFU6HgAZ4eyGnwXF/EvPGGqUr0MnZ5+99485wwW41kW91A4LOGxSHhgugZmSChL5AlElNdwlNgcnLQ==\",\n      \"funding\": [\n        {\n          \"type\": \"opencollective\",\n          \"url\": \"https://opencollective.com/postcss/\"\n        },\n        {\n          \"type\": \"tidelift\",\n          \"url\": \"https://tidelift.com/funding/github/npm/postcss\"\n        },\n        {\n          \"type\": \"github\",\n          \"url\": \"https://github.com/sponsors/ai\"\n        }\n      ],\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"nanoid\": \"^3.3.11\",\n        \"picocolors\": \"^1.1.1\",\n        \"source-map-js\": \"^1.2.1\"",
+    "token_count": 154
+  },
+  {
+    "id": 100,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1291,
+    "line_end": 1310,
+    "text": "      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"nanoid\": \"^3.3.11\",\n        \"picocolors\": \"^1.1.1\",\n        \"source-map-js\": \"^1.2.1\"\n      },\n      \"engines\": {\n        \"node\": \"^10 || ^12 || >=14\"\n      }\n    },\n    \"node_modules/rollup\": {\n      \"version\": \"4.60.1\",\n      \"resolved\": \"https://registry.npmjs.org/rollup/-/rollup-4.60.1.tgz\",\n      \"integrity\": \"sha512-VmtB2rFU/GroZ4oL8+ZqXgSA38O6GR8KSIvWmEFv63pQ0G6KaBH9s07PO8XTXP4vI+3UJUEypOfjkGfmSBBR0w==\",\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@types/estree\": \"1.0.8\"\n      },\n      \"bin\": {",
+    "token_count": 149
+  },
+  {
+    "id": 101,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1306,
+    "line_end": 1325,
+    "text": "      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@types/estree\": \"1.0.8\"\n      },\n      \"bin\": {\n        \"rollup\": \"dist/bin/rollup\"\n      },\n      \"engines\": {\n        \"node\": \">=18.0.0\",\n        \"npm\": \">=8.0.0\"\n      },\n      \"optionalDependencies\": {\n        \"@rollup/rollup-android-arm-eabi\": \"4.60.1\",\n        \"@rollup/rollup-android-arm64\": \"4.60.1\",\n        \"@rollup/rollup-darwin-arm64\": \"4.60.1\",\n        \"@rollup/rollup-darwin-x64\": \"4.60.1\",\n        \"@rollup/rollup-freebsd-arm64\": \"4.60.1\",\n        \"@rollup/rollup-freebsd-x64\": \"4.60.1\",\n        \"@rollup/rollup-linux-arm-gnueabihf\": \"4.60.1\",\n        \"@rollup/rollup-linux-arm-musleabihf\": \"4.60.1\",",
+    "token_count": 168
+  },
+  {
+    "id": 102,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1321,
+    "line_end": 1340,
+    "text": "        \"@rollup/rollup-darwin-x64\": \"4.60.1\",\n        \"@rollup/rollup-freebsd-arm64\": \"4.60.1\",\n        \"@rollup/rollup-freebsd-x64\": \"4.60.1\",\n        \"@rollup/rollup-linux-arm-gnueabihf\": \"4.60.1\",\n        \"@rollup/rollup-linux-arm-musleabihf\": \"4.60.1\",\n        \"@rollup/rollup-linux-arm64-gnu\": \"4.60.1\",\n        \"@rollup/rollup-linux-arm64-musl\": \"4.60.1\",\n        \"@rollup/rollup-linux-loong64-gnu\": \"4.60.1\",\n        \"@rollup/rollup-linux-loong64-musl\": \"4.60.1\",\n        \"@rollup/rollup-linux-ppc64-gnu\": \"4.60.1\",\n        \"@rollup/rollup-linux-ppc64-musl\": \"4.60.1\",\n        \"@rollup/rollup-linux-riscv64-gnu\": \"4.60.1\",\n        \"@rollup/rollup-linux-riscv64-musl\": \"4.60.1\",\n        \"@rollup/rollup-linux-s390x-gnu\": \"4.60.1\",\n        \"@rollup/rollup-linux-x64-gnu\": \"4.60.1\",\n        \"@rollup/rollup-linux-x64-musl\": \"4.60.1\",\n        \"@rollup/rollup-openbsd-x64\": \"4.60.1\",\n        \"@rollup/rollup-openharmony-arm64\": \"4.60.1\",\n        \"@rollup/rollup-win32-arm64-msvc\": \"4.60.1\",\n        \"@rollup/rollup-win32-ia32-msvc\": \"4.60.1\",",
+    "token_count": 262
+  },
+  {
+    "id": 103,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1336,
+    "line_end": 1355,
+    "text": "        \"@rollup/rollup-linux-x64-musl\": \"4.60.1\",\n        \"@rollup/rollup-openbsd-x64\": \"4.60.1\",\n        \"@rollup/rollup-openharmony-arm64\": \"4.60.1\",\n        \"@rollup/rollup-win32-arm64-msvc\": \"4.60.1\",\n        \"@rollup/rollup-win32-ia32-msvc\": \"4.60.1\",\n        \"@rollup/rollup-win32-x64-gnu\": \"4.60.1\",\n        \"@rollup/rollup-win32-x64-msvc\": \"4.60.1\",\n        \"fsevents\": \"~2.3.2\"\n      }\n    },\n    \"node_modules/source-map-js\": {\n      \"version\": \"1.2.1\",\n      \"resolved\": \"https://registry.npmjs.org/source-map-js/-/source-map-js-1.2.1.tgz\",\n      \"integrity\": \"sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==\",\n      \"license\": \"BSD-3-Clause\",\n      \"engines\": {\n        \"node\": \">=0.10.0\"\n      }\n    },\n    \"node_modules/tinyglobby\": {",
+    "token_count": 200
+  },
+  {
+    "id": 104,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1351,
+    "line_end": 1370,
+    "text": "      \"engines\": {\n        \"node\": \">=0.10.0\"\n      }\n    },\n    \"node_modules/tinyglobby\": {\n      \"version\": \"0.2.16\",\n      \"resolved\": \"https://registry.npmjs.org/tinyglobby/-/tinyglobby-0.2.16.tgz\",\n      \"integrity\": \"sha512-pn99VhoACYR8nFHhxqix+uvsbXineAasWm5ojXoN8xEwK5Kd3/TrhNn1wByuD52UxWRLy8pu+kRMniEi6Eq9Zg==\",\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"fdir\": \"^6.5.0\",\n        \"picomatch\": \"^4.0.4\"\n      },\n      \"engines\": {\n        \"node\": \">=12.0.0\"\n      },\n      \"funding\": {\n        \"url\": \"https://github.com/sponsors/SuperchupuDev\"\n      }",
+    "token_count": 149
+  },
+  {
+    "id": 105,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1366,
+    "line_end": 1385,
+    "text": "        \"node\": \">=12.0.0\"\n      },\n      \"funding\": {\n        \"url\": \"https://github.com/sponsors/SuperchupuDev\"\n      }\n    },\n    \"node_modules/typescript\": {\n      \"version\": \"5.9.3\",\n      \"resolved\": \"https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz\",\n      \"integrity\": \"sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==\",\n      \"devOptional\": true,\n      \"license\": \"Apache-2.0\",\n      \"bin\": {\n        \"tsc\": \"bin/tsc\",\n        \"tsserver\": \"bin/tsserver\"\n      },\n      \"engines\": {\n        \"node\": \">=14.17\"\n      }\n    },",
+    "token_count": 148
+  },
+  {
+    "id": 106,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1381,
+    "line_end": 1400,
+    "text": "      },\n      \"engines\": {\n        \"node\": \">=14.17\"\n      }\n    },\n    \"node_modules/vite\": {\n      \"version\": \"6.4.2\",\n      \"resolved\": \"https://registry.npmjs.org/vite/-/vite-6.4.2.tgz\",\n      \"integrity\": \"sha512-2N/55r4JDJ4gdrCvGgINMy+HH3iRpNIz8K6SFwVsA+JbQScLiC+clmAxBgwiSPgcG9U15QmvqCGWzMbqda5zGQ==\",\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"esbuild\": \"^0.25.0\",\n        \"fdir\": \"^6.4.4\",\n        \"picomatch\": \"^4.0.2\",\n        \"postcss\": \"^8.5.3\",\n        \"rollup\": \"^4.34.9\",\n        \"tinyglobby\": \"^0.2.13\"\n      },\n      \"bin\": {",
+    "token_count": 145
+  },
+  {
+    "id": 107,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1396,
+    "line_end": 1415,
+    "text": "        \"postcss\": \"^8.5.3\",\n        \"rollup\": \"^4.34.9\",\n        \"tinyglobby\": \"^0.2.13\"\n      },\n      \"bin\": {\n        \"vite\": \"bin/vite.js\"\n      },\n      \"engines\": {\n        \"node\": \"^18.0.0 || ^20.0.0 || >=22.0.0\"\n      },\n      \"funding\": {\n        \"url\": \"https://github.com/vitejs/vite?sponsor=1\"\n      },\n      \"optionalDependencies\": {\n        \"fsevents\": \"~2.3.3\"\n      },\n      \"peerDependencies\": {\n        \"@types/node\": \"^18.0.0 || ^20.0.0 || >=22.0.0\",\n        \"jiti\": \">=1.21.0\",\n        \"less\": \"*\",",
+    "token_count": 130
+  },
+  {
+    "id": 108,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1411,
+    "line_end": 1430,
+    "text": "      },\n      \"peerDependencies\": {\n        \"@types/node\": \"^18.0.0 || ^20.0.0 || >=22.0.0\",\n        \"jiti\": \">=1.21.0\",\n        \"less\": \"*\",\n        \"lightningcss\": \"^1.21.0\",\n        \"sass\": \"*\",\n        \"sass-embedded\": \"*\",\n        \"stylus\": \"*\",\n        \"sugarss\": \"*\",\n        \"terser\": \"^5.16.0\",\n        \"tsx\": \"^4.8.1\",\n        \"yaml\": \"^2.4.2\"\n      },\n      \"peerDependenciesMeta\": {\n        \"@types/node\": {\n          \"optional\": true\n        },\n        \"jiti\": {\n          \"optional\": true",
+    "token_count": 126
+  },
+  {
+    "id": 109,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1426,
+    "line_end": 1445,
+    "text": "        \"@types/node\": {\n          \"optional\": true\n        },\n        \"jiti\": {\n          \"optional\": true\n        },\n        \"less\": {\n          \"optional\": true\n        },\n        \"lightningcss\": {\n          \"optional\": true\n        },\n        \"sass\": {\n          \"optional\": true\n        },\n        \"sass-embedded\": {\n          \"optional\": true\n        },\n        \"stylus\": {\n          \"optional\": true",
+    "token_count": 102
+  },
+  {
+    "id": 110,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1441,
+    "line_end": 1460,
+    "text": "        \"sass-embedded\": {\n          \"optional\": true\n        },\n        \"stylus\": {\n          \"optional\": true\n        },\n        \"sugarss\": {\n          \"optional\": true\n        },\n        \"terser\": {\n          \"optional\": true\n        },\n        \"tsx\": {\n          \"optional\": true\n        },\n        \"yaml\": {\n          \"optional\": true\n        }\n      }\n    },",
+    "token_count": 91
+  },
+  {
+    "id": 111,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1456,
+    "line_end": 1475,
+    "text": "        \"yaml\": {\n          \"optional\": true\n        }\n      }\n    },\n    \"node_modules/vscode-uri\": {\n      \"version\": \"3.1.0\",\n      \"resolved\": \"https://registry.npmjs.org/vscode-uri/-/vscode-uri-3.1.0.tgz\",\n      \"integrity\": \"sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==\",\n      \"dev\": true,\n      \"license\": \"MIT\"\n    },\n    \"node_modules/vue\": {\n      \"version\": \"3.5.32\",\n      \"resolved\": \"https://registry.npmjs.org/vue/-/vue-3.5.32.tgz\",\n      \"integrity\": \"sha512-vM4z4Q9tTafVfMAK7IVzmxg34rSzTFMyIe0UUEijUCkn9+23lj0WRfA83dg7eQZIUlgOSGrkViIaCfqSAUXsMw==\",\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@vue/compiler-dom\": \"3.5.32\",\n        \"@vue/compiler-sfc\": \"3.5.32\",",
+    "token_count": 186
+  },
+  {
+    "id": 112,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1471,
+    "line_end": 1490,
+    "text": "      \"integrity\": \"sha512-vM4z4Q9tTafVfMAK7IVzmxg34rSzTFMyIe0UUEijUCkn9+23lj0WRfA83dg7eQZIUlgOSGrkViIaCfqSAUXsMw==\",\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@vue/compiler-dom\": \"3.5.32\",\n        \"@vue/compiler-sfc\": \"3.5.32\",\n        \"@vue/runtime-dom\": \"3.5.32\",\n        \"@vue/server-renderer\": \"3.5.32\",\n        \"@vue/shared\": \"3.5.32\"\n      },\n      \"peerDependencies\": {\n        \"typescript\": \"*\"\n      },\n      \"peerDependenciesMeta\": {\n        \"typescript\": {\n          \"optional\": true\n        }\n      }\n    },\n    \"node_modules/vue-router\": {\n      \"version\": \"4.6.4\",",
+    "token_count": 149
+  },
+  {
+    "id": 113,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1486,
+    "line_end": 1505,
+    "text": "        }\n      }\n    },\n    \"node_modules/vue-router\": {\n      \"version\": \"4.6.4\",\n      \"resolved\": \"https://registry.npmjs.org/vue-router/-/vue-router-4.6.4.tgz\",\n      \"integrity\": \"sha512-Hz9q5sa33Yhduglwz6g9skT8OBPii+4bFn88w6J+J4MfEo4KRRpmiNG/hHHkdbRFlLBOqxN8y8gf2Fb0MTUgVg==\",\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@vue/devtools-api\": \"^6.6.4\"\n      },\n      \"funding\": {\n        \"url\": \"https://github.com/sponsors/posva\"\n      },\n      \"peerDependencies\": {\n        \"vue\": \"^3.5.0\"\n      }\n    },\n    \"node_modules/vue-tsc\": {\n      \"version\": \"2.2.12\",",
+    "token_count": 146
+  },
+  {
+    "id": 114,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1501,
+    "line_end": 1520,
+    "text": "        \"vue\": \"^3.5.0\"\n      }\n    },\n    \"node_modules/vue-tsc\": {\n      \"version\": \"2.2.12\",\n      \"resolved\": \"https://registry.npmjs.org/vue-tsc/-/vue-tsc-2.2.12.tgz\",\n      \"integrity\": \"sha512-P7OP77b2h/Pmk+lZdJ0YWs+5tJ6J2+uOQPo7tlBnY44QqQSPYvS0qVT4wqDJgwrZaLe47etJLLQRFia71GYITw==\",\n      \"dev\": true,\n      \"license\": \"MIT\",\n      \"dependencies\": {\n        \"@volar/typescript\": \"2.4.15\",\n        \"@vue/language-core\": \"2.2.12\"\n      },\n      \"bin\": {\n        \"vue-tsc\": \"bin/vue-tsc.js\"\n      },\n      \"peerDependencies\": {\n        \"typescript\": \">=5.0.0\"\n      }\n    }",
+    "token_count": 145
+  },
+  {
+    "id": 115,
+    "file": "package-lock.json",
+    "language": "json",
+    "line_start": 1516,
+    "line_end": 1523,
+    "text": "      },\n      \"peerDependencies\": {\n        \"typescript\": \">=5.0.0\"\n      }\n    }\n  }\n}\n",
+    "token_count": 23
+  },
+  {
+    "id": 116,
+    "file": "package.json",
+    "language": "json",
+    "line_start": 1,
+    "line_end": 20,
+    "text": "{\n  \"name\": \"bobr\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"scripts\": {\n    \"dev\": \"vite\",\n    \"build\": \"vue-tsc && vite build\",\n    \"preview\": \"vite preview\"\n  },\n  \"dependencies\": {\n    \"vue\": \"^3.5.0\",\n    \"vue-router\": \"^4.4.0\"\n  },\n  \"devDependencies\": {\n    \"@vitejs/plugin-vue\": \"^5.0.0\",\n    \"typescript\": \"^5.6.0\",\n    \"vue-tsc\": \"^2.1.0\",\n    \"vite\": \"^6.0.0\"\n  }",
+    "token_count": 100
+  },
+  {
+    "id": 117,
+    "file": "package.json",
+    "language": "json",
+    "line_start": 16,
+    "line_end": 22,
+    "text": "    \"@vitejs/plugin-vue\": \"^5.0.0\",\n    \"typescript\": \"^5.6.0\",\n    \"vue-tsc\": \"^2.1.0\",\n    \"vite\": \"^6.0.0\"\n  }\n}\n",
+    "token_count": 29
+  },
+  {
+    "id": 118,
+    "file": "rag/create_index.cjs",
+    "language": "text",
+    "line_start": 1,
+    "line_end": 20,
+    "text": "const fs = require('fs');\nconst path = require('path');\n\nconst basePath = path.join(__dirname, '..');\nconst outputFile = path.join(__dirname, 'index.json');\n\n// Get all text files (exclude binaries)\nfunction getAllFiles(dir, excludePatterns) {\n    const files = [];\n    const items = fs.readdirSync(dir, { withFileTypes: true });\n    for (const item of items) {\n        const fullPath = path.join(dir, item.name);\n        if (item.isDirectory()) {\n            if (!excludePatterns.some(p => p.test(item.name))) {\n                files.push(...getAllFiles(fullPath, excludePatterns));\n            }\n        } else {\n            if (!excludePatterns.some(p => p.test(fullPath))) {\n                files.push(fullPath);\n            }",
+    "token_count": 183
+  },
+  {
+    "id": 119,
+    "file": "rag/create_index.cjs",
+    "language": "text",
+    "line_start": 16,
+    "line_end": 35,
+    "text": "            }\n        } else {\n            if (!excludePatterns.some(p => p.test(fullPath))) {\n                files.push(fullPath);\n            }\n        }\n    }\n    return files;\n}\n\nconst excludePatterns = [\n    /node_modules/,\n    /\\.git/,\n    /\\.jpg$/,\n    /\\.svg$/,\n    /\\.log$/,\n    /\\.bat$/\n];\n\nconst allFiles = getAllFiles(basePath, excludePatterns);",
+    "token_count": 90
+  },
+  {
+    "id": 120,
+    "file": "rag/create_index.cjs",
+    "language": "text",
+    "line_start": 31,
+    "line_end": 50,
+    "text": "    /\\.log$/,\n    /\\.bat$/\n];\n\nconst allFiles = getAllFiles(basePath, excludePatterns);\n\nconst chunks = [];\nlet chunkId = 0;\n\nallFiles.forEach(file => {\n    const relativePath = path.relative(basePath, file);\n    const extension = path.extname(file).toLowerCase();\n    \n    // Determine language/file type\n    const language = (() => {\n        switch (extension) {\n            case '.vue': return 'vue';\n            case '.ts': return 'typescript';\n            case '.js': return 'javascript';\n            case '.json': return 'json';",
+    "token_count": 134
+  },
+  {
+    "id": 121,
+    "file": "rag/create_index.cjs",
+    "language": "text",
+    "line_start": 46,
+    "line_end": 65,
+    "text": "        switch (extension) {\n            case '.vue': return 'vue';\n            case '.ts': return 'typescript';\n            case '.js': return 'javascript';\n            case '.json': return 'json';\n            case '.md': return 'markdown';\n            case '.css': return 'css';\n            case '.html': return 'html';\n            default: return 'text';\n        }\n    })();\n    \n    // Read file content\n    let content;\n    try {\n        content = fs.readFileSync(file, 'utf8');\n    } catch (err) {\n        console.warn(`Failed to read ${relativePath}:`, err.message);\n        return;\n    }",
+    "token_count": 149
+  },
+  {
+    "id": 122,
+    "file": "rag/create_index.cjs",
+    "language": "text",
+    "line_start": 61,
+    "line_end": 80,
+    "text": "        content = fs.readFileSync(file, 'utf8');\n    } catch (err) {\n        console.warn(`Failed to read ${relativePath}:`, err.message);\n        return;\n    }\n    \n    // Split into lines\n    const lines = content.split(/\\r?\\n/);\n    \n    // Create chunks of 20 lines with 5 lines overlap\n    const chunkSize = 20;\n    const overlap = 5;\n    const step = chunkSize - overlap;\n    \n    for (let lineIndex = 0; lineIndex < lines.length; lineIndex += step) {\n        const chunkLines = lines.slice(lineIndex, lineIndex + chunkSize);\n        const chunkText = chunkLines.join('\\n');\n        \n        // Only include non-empty chunks\n        if (chunkText.trim().length > 0) {",
+    "token_count": 169
+  },
+  {
+    "id": 123,
+    "file": "rag/create_index.cjs",
+    "language": "text",
+    "line_start": 76,
+    "line_end": 95,
+    "text": "        const chunkLines = lines.slice(lineIndex, lineIndex + chunkSize);\n        const chunkText = chunkLines.join('\\n');\n        \n        // Only include non-empty chunks\n        if (chunkText.trim().length > 0) {\n            chunks.push({\n                id: chunkId,\n                file: relativePath.replace(/\\\\/g, '/'), // normalize to forward slashes\n                language,\n                line_start: lineIndex + 1,\n                line_end: lineIndex + chunkLines.length,\n                text: chunkText,\n                token_count: Math.ceil(chunkText.length / 4) // rough estimate\n            });\n            chunkId++;\n        }\n    }\n});\n\n// Save to JSON",
+    "token_count": 168
+  },
+  {
+    "id": 124,
+    "file": "rag/create_index.cjs",
+    "language": "text",
+    "line_start": 91,
+    "line_end": 97,
+    "text": "        }\n    }\n});\n\n// Save to JSON\nfs.writeFileSync(outputFile, JSON.stringify(chunks, null, 2), 'utf8');\nconsole.log(`Created RAG index with ${chunks.length} chunks at ${outputFile}`);",
+    "token_count": 47
+  },
+  {
+    "id": 125,
+    "file": "rag/create_index.ps1",
+    "language": "text",
+    "line_start": 1,
+    "line_end": 20,
+    "text": "# Create RAG index for Bobr project\n\n$basePath = \"C:\\Users\\user\\.openclaw\\workspace\\bobr\"\n$outputFile = \"$basePath\\rag\\index.json\"\n\n# Get all text files (exclude binaries)\n$files = Get-ChildItem -Recurse $basePath -File | Where-Object {\n    $_.FullName -notmatch 'node_modules|\\.git|\\.jpg|\\.svg|\\.log|\\.bat'\n}\n\n$chunks = @()\n$chunkId = 0\n\nforeach ($file in $files) {\n    $relativePath = $file.FullName.Substring($basePath.Length + 1)\n    $extension = $file.Extension.ToLower()\n    \n    # Determine language/file type\n    $language = switch ($extension) {\n        '.vue' { 'vue' }",
+    "token_count": 145
+  },
+  {
+    "id": 126,
+    "file": "rag/create_index.ps1",
+    "language": "text",
+    "line_start": 16,
+    "line_end": 35,
+    "text": "    $extension = $file.Extension.ToLower()\n    \n    # Determine language/file type\n    $language = switch ($extension) {\n        '.vue' { 'vue' }\n        '.ts' { 'typescript' }\n        '.js' { 'javascript' }\n        '.json' { 'json' }\n        '.md' { 'markdown' }\n        '.css' { 'css' }\n        '.html' { 'html' }\n        default { 'text' }\n    }\n    \n    # Read file content\n    try {\n        $content = Get-Content -Path $file.FullName -Raw -Encoding UTF8\n    } catch {\n        Write-Warning \"Failed to read $relativePath: $_\"\n        continue",
+    "token_count": 137
+  },
+  {
+    "id": 127,
+    "file": "rag/create_index.ps1",
+    "language": "text",
+    "line_start": 31,
+    "line_end": 50,
+    "text": "    try {\n        $content = Get-Content -Path $file.FullName -Raw -Encoding UTF8\n    } catch {\n        Write-Warning \"Failed to read $relativePath: $_\"\n        continue\n    }\n    \n    # Split into lines\n    $lines = $content -split \"`r`n|`n|`r\"\n    \n    # Create chunks of 20 lines with 5 lines overlap\n    $lineIndex = 0\n    while ($lineIndex -lt $lines.Count) {\n        $chunkLines = $lines[$lineIndex..[Math]::Min($lineIndex + 19, $lines.Count - 1)]\n        $chunkText = $chunkLines -join \"`n\"\n        \n        # Only include non-empty chunks\n        if ($chunkText.Trim().Length -gt 0) {\n            $chunks += [PSCustomObject]@{\n                id = $chunkId",
+    "token_count": 166
+  },
+  {
+    "id": 128,
+    "file": "rag/create_index.ps1",
+    "language": "text",
+    "line_start": 46,
+    "line_end": 65,
+    "text": "        \n        # Only include non-empty chunks\n        if ($chunkText.Trim().Length -gt 0) {\n            $chunks += [PSCustomObject]@{\n                id = $chunkId\n                file = $relativePath\n                language = $language\n                line_start = $lineIndex + 1\n                line_end = $lineIndex + $chunkLines.Count\n                text = $chunkText\n                token_count = $chunkText.Length / 4  # rough estimate\n            }\n            $chunkId++\n        }\n        \n        $lineIndex += 15  # overlap of 5 lines (20 - 15 = 5)\n    }\n}\n\n# Save to JSON",
+    "token_count": 147
+  },
+  {
+    "id": 129,
+    "file": "rag/create_index.ps1",
+    "language": "text",
+    "line_start": 61,
+    "line_end": 68,
+    "text": "        $lineIndex += 15  # overlap of 5 lines (20 - 15 = 5)\n    }\n}\n\n# Save to JSON\n$chunks | ConvertTo-Json -Depth 3 | Set-Content -Path $outputFile -Encoding UTF8\n\nWrite-Host \"Created RAG index with $($chunks.Count) chunks at $outputFile\"",
+    "token_count": 61
+  },
+  {
+    "id": 130,
+    "file": "README.md",
+    "language": "markdown",
+    "line_start": 1,
+    "line_end": 20,
+    "text": "# Bobr 🥤\n\nA modern, responsive web application dedicated to the fascinating world of beavers — built with Vue 3, TypeScript, and Vite.\n\n## ✨ Features\n\n- **Dark‑mode UI** with gradient accents, blur effects, and smooth animations\n- **Fully responsive** — mobile‑first sidebar, hamburger menu for small screens\n- **Multi‑page navigation** — Home, Bobr, Gallery, Video, Fun Facts, Habitat, Species\n- **Vue 3 + TypeScript** — type‑safe, reactive, Composition API\n- **Vite** — instant hot‑module replacement, fast builds\n- **Clean component architecture** — views, shared components, Vue Router\n\n## 🚀 Quick Start\n\n1. **Clone the repository**\n   ```bash\n   git clone https://github.com/eugenewoofer/bobr.git\n   cd bobr\n   ```",
+    "token_count": 181
+  },
+  {
+    "id": 131,
+    "file": "README.md",
+    "language": "markdown",
+    "line_start": 16,
+    "line_end": 35,
+    "text": "1. **Clone the repository**\n   ```bash\n   git clone https://github.com/eugenewoofer/bobr.git\n   cd bobr\n   ```\n\n2. **Install dependencies**\n   ```bash\n   npm install\n   ```\n\n3. **Run the development server**\n   ```bash\n   npm run dev\n   ```\n   Then open [http://localhost:5173](http://localhost:5173) in your browser.\n\n4. **Build for production**\n   ```bash\n   npm run build",
+    "token_count": 94
+  },
+  {
+    "id": 132,
+    "file": "README.md",
+    "language": "markdown",
+    "line_start": 31,
+    "line_end": 50,
+    "text": "   Then open [http://localhost:5173](http://localhost:5173) in your browser.\n\n4. **Build for production**\n   ```bash\n   npm run build\n   ```\n\n5. **Preview the built app**\n   ```bash\n   npm run preview\n   ```\n\n## 📁 Project Structure\n\n```\nbobr/\n├── src/\n│   ├── assets/          # Images, icons, fonts\n│   ├── components/      # Reusable Vue components (SideBar, etc.)\n│   ├── router/         # Vue Router configuration",
+    "token_count": 105
+  },
+  {
+    "id": 133,
+    "file": "README.md",
+    "language": "markdown",
+    "line_start": 46,
+    "line_end": 65,
+    "text": "bobr/\n├── src/\n│   ├── assets/          # Images, icons, fonts\n│   ├── components/      # Reusable Vue components (SideBar, etc.)\n│   ├── router/         # Vue Router configuration\n│   ├── views/          # Page‑level components (HomeView, BobrView, …)\n│   ├── App.vue         # Root component\n│   ├── main.ts         # Application entry point\n│   └── style.css       # Global styles\n├── index.html          # HTML template\n├── vite.config.ts      # Vite configuration\n├── tsconfig.json       # TypeScript configuration\n├── package.json        # Dependencies & scripts\n└── README.md           # You are here\n```\n\n## 🛠️ Available Scripts\n\n- `npm run dev` — start dev server at `localhost:5173`\n- `npm run build` — build for production (outputs to `dist/`)",
+    "token_count": 189
+  },
+  {
+    "id": 134,
+    "file": "README.md",
+    "language": "markdown",
+    "line_start": 61,
+    "line_end": 80,
+    "text": "\n## 🛠️ Available Scripts\n\n- `npm run dev` — start dev server at `localhost:5173`\n- `npm run build` — build for production (outputs to `dist/`)\n- `npm run preview` — locally preview the production build\n- `dev.bat` — Windows batch script that opens the browser and starts the dev server\n\n## 🎨 Design Notes\n\n- **Color palette:** dark background (`#12101C`), gold gradients (`#8B6914` → `#D4A030`)\n- **Sidebar:** fixed on desktop, slide‑in on mobile with overlay\n- **Cards:** hover effects, smooth transitions\n- **Icons:** SVG assets and emoji fallbacks\n- **Typography:** system fonts with gradient text for headings\n\n## 🔍 Security & Logs\n\nThe project includes request logging (`serve.log`, `srv.log`). If you see suspicious POST requests (e.g., `/device.rsp`), those are likely automated scans — the app itself does not execute external commands.\n",
+    "token_count": 212
+  },
+  {
+    "id": 135,
+    "file": "README.md",
+    "language": "markdown",
+    "line_start": 76,
+    "line_end": 95,
+    "text": "\n## 🔍 Security & Logs\n\nThe project includes request logging (`serve.log`, `srv.log`). If you see suspicious POST requests (e.g., `/device.rsp`), those are likely automated scans — the app itself does not execute external commands.\n\n## 📄 License\n\nMIT — see [LICENSE](LICENSE) (if present) or contact the author.\n\n## 🤝 Contributing\n\n1. Fork the repository\n2. Create a feature branch (`git checkout -b feature/amazing`)\n3. Commit your changes (`git commit -m 'Add amazing feature'`)\n4. Push to the branch (`git push origin feature/amazing`)\n5. Open a Pull Request\n\n## 📬 Contact\n\n- **GitHub:** [@eugenewoofer](https://github.com/eugenewoofer)",
+    "token_count": 161
+  },
+  {
+    "id": 136,
+    "file": "README.md",
+    "language": "markdown",
+    "line_start": 91,
+    "line_end": 100,
+    "text": "5. Open a Pull Request\n\n## 📬 Contact\n\n- **GitHub:** [@eugenewoofer](https://github.com/eugenewoofer)\n- **Project:** [https://github.com/eugenewoofer/bobr](https://github.com/eugenewoofer/bobr)\n\n---\n\n*Built with ❤️ for beavers everywhere.*",
+    "token_count": 60
+  },
+  {
+    "id": 137,
+    "file": "src/App.vue",
+    "language": "vue",
+    "line_start": 1,
+    "line_end": 20,
+    "text": "<template>\n  <div class=\"app-layout\">\n    <SideBar />\n    <main class=\"main-content\">\n      <RouterView />\n    </main>\n  </div>\n</template>\n\n<script setup lang=\"ts\">\nimport { RouterView } from 'vue-router'\nimport SideBar from './components/SideBar.vue'\n</script>\n\n<style scoped>\n.app-layout {\n  display: flex;\n  min-height: 100vh;\n}\n",
+    "token_count": 84
+  },
+  {
+    "id": 138,
+    "file": "src/App.vue",
+    "language": "vue",
+    "line_start": 16,
+    "line_end": 35,
+    "text": ".app-layout {\n  display: flex;\n  min-height: 100vh;\n}\n\n.main-content {\n  margin-left: 240px;\n  flex: 1;\n  min-height: 100vh;\n  width: calc(100% - 240px);\n}\n\n@media (max-width: 768px) {\n  .main-content {\n    margin-left: 0;\n    width: 100%;\n  }\n}\n</style>\n",
+    "token_count": 64
+  },
+  {
+    "id": 139,
+    "file": "src/App.vue",
+    "language": "vue",
+    "line_start": 31,
+    "line_end": 35,
+    "text": "    width: 100%;\n  }\n}\n</style>\n",
+    "token_count": 8
+  },
+  {
+    "id": 140,
+    "file": "src/components/SideBar.vue",
+    "language": "vue",
+    "line_start": 1,
+    "line_end": 20,
+    "text": "<template>\n  <div>\n    <!-- Hamburger button (mobile only) -->\n    <button class=\"hamburger\" :class=\"{ open: isOpen }\" @click=\"toggle\" aria-label=\"Menu\">\n      <span></span>\n      <span></span>\n      <span></span>\n    </button>\n\n    <!-- Overlay (mobile only) -->\n    <div class=\"sidebar-overlay\" :class=\"{ visible: isOpen }\" @click=\"close\"></div>\n\n    <!-- Sidebar -->\n    <aside class=\"sidebar\" :class=\"{ open: isOpen }\">\n      <div class=\"sidebar-brand\">\n        <img class=\"sidebar-logo\" src=\"@/assets/bobr-icon.svg\" alt=\"Bobr\" />\n        <span class=\"sidebar-title\">Bobr</span>\n      </div>\n      <nav class=\"sidebar-nav\">\n        <RouterLink",
+    "token_count": 162
+  },
+  {
+    "id": 141,
+    "file": "src/components/SideBar.vue",
+    "language": "vue",
+    "line_start": 16,
+    "line_end": 35,
+    "text": "        <img class=\"sidebar-logo\" src=\"@/assets/bobr-icon.svg\" alt=\"Bobr\" />\n        <span class=\"sidebar-title\">Bobr</span>\n      </div>\n      <nav class=\"sidebar-nav\">\n        <RouterLink\n          v-for=\"item in menuItems\"\n          :key=\"item.path\"\n          :to=\"item.path\"\n          class=\"sidebar-link\"\n          @click=\"close\"\n        >\n          <span class=\"sidebar-icon\" v-html=\"item.icon\"></span>\n          <span class=\"sidebar-label\">{{ item.label }}</span>\n        </RouterLink>\n      </nav>\n      <div class=\"sidebar-footer\">\n        <span class=\"sidebar-copy\">Bobr Project 2026</span>\n      </div>\n    </aside>\n  </div>",
+    "token_count": 159
+  },
+  {
+    "id": 142,
+    "file": "src/components/SideBar.vue",
+    "language": "vue",
+    "line_start": 31,
+    "line_end": 50,
+    "text": "      <div class=\"sidebar-footer\">\n        <span class=\"sidebar-copy\">Bobr Project 2026</span>\n      </div>\n    </aside>\n  </div>\n</template>\n\n<script setup lang=\"ts\">\nimport { ref, watch } from 'vue'\nimport { RouterLink, useRouter } from 'vue-router'\n\nconst isOpen = ref(false)\nconst router = useRouter()\n\nconst menuItems = [\n  { path: '/', icon: '&#x1F3E0;', label: 'Home' },\n  { path: '/bobr', icon: '&#x1F4F7;', label: 'Bobr' },\n  { path: '/gallery', icon: '&#x1F5BC;&#xFE0F;', label: 'Gallery' },\n  { path: '/video', icon: '&#x1F3AC;', label: 'Video' },\n  { path: '/facts', icon: '&#x1F4A1;', label: 'Fun Facts' },",
+    "token_count": 155
+  },
+  {
+    "id": 143,
+    "file": "src/components/SideBar.vue",
+    "language": "vue",
+    "line_start": 46,
+    "line_end": 65,
+    "text": "  { path: '/', icon: '&#x1F3E0;', label: 'Home' },\n  { path: '/bobr', icon: '&#x1F4F7;', label: 'Bobr' },\n  { path: '/gallery', icon: '&#x1F5BC;&#xFE0F;', label: 'Gallery' },\n  { path: '/video', icon: '&#x1F3AC;', label: 'Video' },\n  { path: '/facts', icon: '&#x1F4A1;', label: 'Fun Facts' },\n  { path: '/habitat', icon: '&#x1F332;', label: 'Habitat' },\n  { path: '/species', icon: '&#x1F4D6;', label: 'Species' },\n]\n\nfunction toggle() { isOpen.value = !isOpen.value }\nfunction close() { isOpen.value = false }\n\n// Close sidebar on route change (for mobile)\nwatch(() => router.currentRoute.value.path, () => { close() })\n</script>\n\n<style scoped>\n/* ===== Hamburger Button ===== */\n.hamburger {\n  display: none;",
+    "token_count": 178
+  },
+  {
+    "id": 144,
+    "file": "src/components/SideBar.vue",
+    "language": "vue",
+    "line_start": 61,
+    "line_end": 80,
+    "text": "\n<style scoped>\n/* ===== Hamburger Button ===== */\n.hamburger {\n  display: none;\n  position: fixed;\n  top: 1rem;\n  left: 1rem;\n  z-index: 200;\n  background: rgba(18, 16, 28, 0.85);\n  backdrop-filter: blur(8px);\n  border: 1px solid rgba(255,255,255,0.1);\n  border-radius: 10px;\n  width: 44px;\n  height: 44px;\n  cursor: pointer;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 5px;",
+    "token_count": 104
+  },
+  {
+    "id": 145,
+    "file": "src/components/SideBar.vue",
+    "language": "vue",
+    "line_start": 76,
+    "line_end": 95,
+    "text": "  cursor: pointer;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 5px;\n  padding: 0;\n  transition: all 0.3s ease;\n}\n\n.hamburger span {\n  display: block;\n  width: 22px;\n  height: 2px;\n  background: #D4A030;\n  border-radius: 2px;\n  transition: all 0.3s ease;\n}\n\n.hamburger.open span:nth-child(1) {\n  transform: rotate(45deg) translate(5px, 5px);",
+    "token_count": 95
+  },
+  {
+    "id": 146,
+    "file": "src/components/SideBar.vue",
+    "language": "vue",
+    "line_start": 91,
+    "line_end": 110,
+    "text": "  transition: all 0.3s ease;\n}\n\n.hamburger.open span:nth-child(1) {\n  transform: rotate(45deg) translate(5px, 5px);\n}\n.hamburger.open span:nth-child(2) {\n  opacity: 0;\n}\n.hamburger.open span:nth-child(3) {\n  transform: rotate(-45deg) translate(5px, -5px);\n}\n\n/* ===== Overlay ===== */\n.sidebar-overlay {\n  display: none;\n  position: fixed;\n  inset: 0;\n  background: rgba(0,0,0,0.5);\n  z-index: 99;",
+    "token_count": 100
+  },
+  {
+    "id": 147,
+    "file": "src/components/SideBar.vue",
+    "language": "vue",
+    "line_start": 106,
+    "line_end": 125,
+    "text": "  display: none;\n  position: fixed;\n  inset: 0;\n  background: rgba(0,0,0,0.5);\n  z-index: 99;\n  opacity: 0;\n  pointer-events: none;\n  transition: opacity 0.3s ease;\n}\n\n.sidebar-overlay.visible {\n  opacity: 1;\n  pointer-events: auto;\n}\n\n/* ===== Sidebar ===== */\n.sidebar {\n  position: fixed;\n  left: 0;\n  top: 0;",
+    "token_count": 78
+  },
+  {
+    "id": 148,
+    "file": "src/components/SideBar.vue",
+    "language": "vue",
+    "line_start": 121,
+    "line_end": 140,
+    "text": "/* ===== Sidebar ===== */\n.sidebar {\n  position: fixed;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  width: 240px;\n  background: rgba(18, 16, 28, 0.97);\n  backdrop-filter: blur(12px);\n  border-right: 1px solid rgba(255,255,255,0.06);\n  display: flex;\n  flex-direction: column;\n  z-index: 100;\n  overflow-y: auto;\n  transition: transform 0.3s ease;\n}\n\n.sidebar-brand {\n  display: flex;\n  align-items: center;",
+    "token_count": 100
+  },
+  {
+    "id": 149,
+    "file": "src/components/SideBar.vue",
+    "language": "vue",
+    "line_start": 136,
+    "line_end": 155,
+    "text": "}\n\n.sidebar-brand {\n  display: flex;\n  align-items: center;\n  gap: 0.75rem;\n  padding: 1.5rem 1.25rem 1.25rem;\n  border-bottom: 1px solid rgba(255,255,255,0.06);\n}\n\n.sidebar-logo {\n  width: 40px;\n  height: 40px;\n}\n\n.sidebar-title {\n  font-size: 1.5rem;\n  font-weight: 800;\n  background: linear-gradient(135deg, #8B6914, #D4A030);\n  -webkit-background-clip: text;",
+    "token_count": 91
+  },
+  {
+    "id": 150,
+    "file": "src/components/SideBar.vue",
+    "language": "vue",
+    "line_start": 151,
+    "line_end": 170,
+    "text": ".sidebar-title {\n  font-size: 1.5rem;\n  font-weight: 800;\n  background: linear-gradient(135deg, #8B6914, #D4A030);\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n}\n\n.sidebar-nav {\n  flex: 1;\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  padding: 1rem 0.75rem;\n}\n\n.sidebar-link {\n  display: flex;\n  align-items: center;\n  gap: 0.75rem;",
+    "token_count": 93
+  },
+  {
+    "id": 151,
+    "file": "src/components/SideBar.vue",
+    "language": "vue",
+    "line_start": 166,
+    "line_end": 185,
+    "text": "\n.sidebar-link {\n  display: flex;\n  align-items: center;\n  gap: 0.75rem;\n  padding: 0.7rem 1rem;\n  border-radius: 10px;\n  color: rgba(255,255,255,0.6);\n  text-decoration: none;\n  font-weight: 500;\n  font-size: 0.95rem;\n  transition: all 0.2s ease;\n}\n\n.sidebar-link:hover {\n  background: rgba(255,255,255,0.06);\n  color: rgba(255,255,255,0.9);\n}\n\n.sidebar-link.router-link-exact-active {",
+    "token_count": 97
+  },
+  {
+    "id": 152,
+    "file": "src/components/SideBar.vue",
+    "language": "vue",
+    "line_start": 181,
+    "line_end": 200,
+    "text": "  background: rgba(255,255,255,0.06);\n  color: rgba(255,255,255,0.9);\n}\n\n.sidebar-link.router-link-exact-active {\n  background: rgba(139,105,20,0.2);\n  color: #D4A030;\n  border: 1px solid rgba(212,160,48,0.15);\n}\n\n.sidebar-icon {\n  font-size: 1.2rem;\n  width: 28px;\n  text-align: center;\n}\n\n.sidebar-label {\n  white-space: nowrap;\n}\n",
+    "token_count": 84
+  },
+  {
+    "id": 153,
+    "file": "src/components/SideBar.vue",
+    "language": "vue",
+    "line_start": 196,
+    "line_end": 215,
+    "text": "\n.sidebar-label {\n  white-space: nowrap;\n}\n\n.sidebar-footer {\n  padding: 1rem 1.25rem;\n  border-top: 1px solid rgba(255,255,255,0.06);\n}\n\n.sidebar-copy {\n  font-size: 0.75rem;\n  color: rgba(255,255,255,0.25);\n}\n\n/* ===== Mobile: < 768px ===== */\n@media (max-width: 768px) {\n  .hamburger {\n    display: flex;\n  }",
+    "token_count": 78
+  },
+  {
+    "id": 154,
+    "file": "src/components/SideBar.vue",
+    "language": "vue",
+    "line_start": 211,
+    "line_end": 230,
+    "text": "/* ===== Mobile: < 768px ===== */\n@media (max-width: 768px) {\n  .hamburger {\n    display: flex;\n  }\n\n  .sidebar-overlay {\n    display: block;\n  }\n\n  .sidebar {\n    transform: translateX(-100%);\n  }\n\n  .sidebar.open {\n    transform: translateX(0);\n  }\n}\n</style>\n",
+    "token_count": 66
+  },
+  {
+    "id": 155,
+    "file": "src/components/SideBar.vue",
+    "language": "vue",
+    "line_start": 226,
+    "line_end": 230,
+    "text": "    transform: translateX(0);\n  }\n}\n</style>\n",
+    "token_count": 12
+  },
+  {
+    "id": 156,
+    "file": "src/main.ts",
+    "language": "typescript",
+    "line_start": 1,
+    "line_end": 9,
+    "text": "import { createApp } from 'vue'\nimport App from './App.vue'\nimport router from './router'\nimport './style.css'\n\nconst app = createApp(App)\napp.use(router)\napp.mount('#app')\n",
+    "token_count": 44
+  },
+  {
+    "id": 157,
+    "file": "src/router/index.ts",
+    "language": "typescript",
+    "line_start": 1,
+    "line_end": 20,
+    "text": "import { createRouter, createWebHistory } from 'vue-router'\nimport type { RouteRecordRaw } from 'vue-router'\nimport HomeView from '@/views/HomeView.vue'\nimport BobrView from '@/views/BobrView.vue'\nimport GalleryView from '@/views/GalleryView.vue'\nimport FactsView from '@/views/FactsView.vue'\nimport HabitatView from '@/views/HabitatView.vue'\nimport SpeciesView from '@/views/SpeciesView.vue'\nimport VideoView from '@/views/VideoView.vue'\n\nconst routes: RouteRecordRaw[] = [\n  { path: '/', name: 'home', component: HomeView },\n  { path: '/bobr', name: 'bobr', component: BobrView },\n  { path: '/gallery', name: 'gallery', component: GalleryView },\n  { path: '/facts', name: 'facts', component: FactsView },\n  { path: '/habitat', name: 'habitat', component: HabitatView },\n  { path: '/species', name: 'species', component: SpeciesView },\n  { path: '/video', name: 'video', component: VideoView },\n]\n",
+    "token_count": 225
+  },
+  {
+    "id": 158,
+    "file": "src/router/index.ts",
+    "language": "typescript",
+    "line_start": 16,
+    "line_end": 27,
+    "text": "  { path: '/habitat', name: 'habitat', component: HabitatView },\n  { path: '/species', name: 'species', component: SpeciesView },\n  { path: '/video', name: 'video', component: VideoView },\n]\n\nconst router = createRouter({\n  history: createWebHistory(),\n  routes\n})\n\nexport default router\n",
+    "token_count": 72
+  },
+  {
+    "id": 159,
+    "file": "src/style.css",
+    "language": "css",
+    "line_start": 1,
+    "line_end": 20,
+    "text": "*,\n*::before,\n*::after {\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box;\n}\n\nbody {\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Oxygen,\n    Ubuntu, Cantarell, sans-serif;\n  background: #0f0f1a;\n  color: #eee;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  overflow-x: hidden;\n}\n\n::-webkit-scrollbar {\n  width: 8px;",
+    "token_count": 94
+  },
+  {
+    "id": 160,
+    "file": "src/style.css",
+    "language": "css",
+    "line_start": 16,
+    "line_end": 35,
+    "text": "  overflow-x: hidden;\n}\n\n::-webkit-scrollbar {\n  width: 8px;\n}\n\n::-webkit-scrollbar-track {\n  background: #0f0f1a;\n}\n\n::-webkit-scrollbar-thumb {\n  background: rgba(255, 255, 255, 0.15);\n  border-radius: 4px;\n}\n\n::-webkit-scrollbar-thumb:hover {\n  background: rgba(255, 255, 255, 0.25);\n}\n",
+    "token_count": 73
+  },
+  {
+    "id": 161,
+    "file": "src/style.css",
+    "language": "css",
+    "line_start": 31,
+    "line_end": 41,
+    "text": "\n::-webkit-scrollbar-thumb:hover {\n  background: rgba(255, 255, 255, 0.25);\n}\n\n/* ===== Responsive utility ===== */\nimg {\n  max-width: 100%;\n  height: auto;\n}\n",
+    "token_count": 40
+  },
+  {
+    "id": 162,
+    "file": "src/views/BobrView.vue",
+    "language": "vue",
+    "line_start": 1,
+    "line_end": 20,
+    "text": "<template>\n  <div class=\"bobr-page\">\n    <h1 class=\"bobr-title\">Bobr</h1>\n    <p class=\"bobr-subtitle\">Majestic. Industrious. Unstoppable.</p>\n    <div class=\"bobr-card\">\n      <img src=\"@/assets/bobr.jpg\" alt=\"A majestic beaver\" class=\"bobr-image\" loading=\"lazy\" />\n      <div class=\"bobr-caption\">\n        <span>The North American Beaver in its natural habitat</span>\n      </div>\n    </div>\n    <div class=\"bobr-facts\">\n      <h2>Fun Facts</h2>\n      <ul>\n        <li>Beavers are the second-largest living rodents after capybaras</li>\n        <li>They can hold their breath for up to 15 minutes underwater</li>\n        <li>A beaver's teeth never stop growing</li>\n        <li>They build dams up to 850 meters long</li>\n      </ul>\n    </div>\n  </div>",
+    "token_count": 189
+  },
+  {
+    "id": 163,
+    "file": "src/views/BobrView.vue",
+    "language": "vue",
+    "line_start": 16,
+    "line_end": 35,
+    "text": "        <li>A beaver's teeth never stop growing</li>\n        <li>They build dams up to 850 meters long</li>\n      </ul>\n    </div>\n  </div>\n</template>\n\n<script setup lang=\"ts\">\n</script>\n\n<style scoped>\n.bobr-page {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  padding: 3rem 2rem;\n  max-width: 800px;\n  margin: 0 auto;\n}\n.bobr-title {",
+    "token_count": 90
+  },
+  {
+    "id": 164,
+    "file": "src/views/BobrView.vue",
+    "language": "vue",
+    "line_start": 31,
+    "line_end": 50,
+    "text": "  padding: 3rem 2rem;\n  max-width: 800px;\n  margin: 0 auto;\n}\n.bobr-title {\n  font-size: 3rem;\n  font-weight: 800;\n  background: linear-gradient(135deg, #8B6914, #D4A030, #F0C050);\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n  margin-bottom: 0.5rem;\n}\n.bobr-subtitle {\n  font-size: 1.2rem;\n  color: rgba(255,255,255,0.5);\n  margin-bottom: 2rem;\n}\n.bobr-card {\n  width: 100%;\n  border-radius: 16px;",
+    "token_count": 107
+  },
+  {
+    "id": 165,
+    "file": "src/views/BobrView.vue",
+    "language": "vue",
+    "line_start": 46,
+    "line_end": 65,
+    "text": "  margin-bottom: 2rem;\n}\n.bobr-card {\n  width: 100%;\n  border-radius: 16px;\n  overflow: hidden;\n  background: rgba(255,255,255,0.04);\n  border: 1px solid rgba(255,255,255,0.08);\n}\n.bobr-image {\n  width: 100%;\n  height: auto;\n  display: block;\n  object-fit: cover;\n  max-height: 500px;\n}\n.bobr-caption {\n  display: flex;\n  align-items: center;\n  gap: 0.5rem;",
+    "token_count": 90
+  },
+  {
+    "id": 166,
+    "file": "src/views/BobrView.vue",
+    "language": "vue",
+    "line_start": 61,
+    "line_end": 80,
+    "text": "}\n.bobr-caption {\n  display: flex;\n  align-items: center;\n  gap: 0.5rem;\n  padding: 1rem 1.5rem;\n  font-size: 0.95rem;\n  color: rgba(255,255,255,0.6);\n}\n.bobr-facts {\n  margin-top: 2.5rem;\n  width: 100%;\n  padding: 2rem;\n  background: rgba(255,255,255,0.03);\n  border-radius: 16px;\n  border: 1px solid rgba(255,255,255,0.06);\n}\n.bobr-facts h2 {\n  font-size: 1.5rem;\n  color: #D4A030;",
+    "token_count": 96
+  },
+  {
+    "id": 167,
+    "file": "src/views/BobrView.vue",
+    "language": "vue",
+    "line_start": 76,
+    "line_end": 95,
+    "text": "  border: 1px solid rgba(255,255,255,0.06);\n}\n.bobr-facts h2 {\n  font-size: 1.5rem;\n  color: #D4A030;\n  margin-bottom: 1rem;\n}\n.bobr-facts ul { list-style: none; padding: 0; }\n.bobr-facts li {\n  padding: 0.6rem 0;\n  border-bottom: 1px solid rgba(255,255,255,0.04);\n  color: rgba(255,255,255,0.75);\n  font-size: 1.05rem;\n}\n.bobr-facts li:last-child { border-bottom: none; }\n\n@media (max-width: 768px) {\n  .bobr-page { padding: 4.5rem 1rem 2rem; }\n  .bobr-title { font-size: 2rem; }\n  .bobr-subtitle { font-size: 1rem; margin-bottom: 1.25rem; }",
+    "token_count": 136
+  },
+  {
+    "id": 168,
+    "file": "src/views/BobrView.vue",
+    "language": "vue",
+    "line_start": 91,
+    "line_end": 103,
+    "text": "\n@media (max-width: 768px) {\n  .bobr-page { padding: 4.5rem 1rem 2rem; }\n  .bobr-title { font-size: 2rem; }\n  .bobr-subtitle { font-size: 1rem; margin-bottom: 1.25rem; }\n  .bobr-image { max-height: 300px; }\n  .bobr-caption { padding: 0.75rem 1rem; font-size: 0.85rem; }\n  .bobr-facts { padding: 1.25rem; margin-top: 1.5rem; }\n  .bobr-facts h2 { font-size: 1.2rem; }\n  .bobr-facts li { font-size: 0.92rem; }\n}\n</style>\n",
+    "token_count": 105
+  },
+  {
+    "id": 169,
+    "file": "src/views/FactsView.vue",
+    "language": "vue",
+    "line_start": 1,
+    "line_end": 20,
+    "text": "<template>\n  <div class=\"facts-page\">\n    <h1 class=\"page-title\">Fun Facts About Beavers</h1>\n    <p class=\"page-sub\">Prepare to be amazed by nature's greatest engineers</p>\n    <div class=\"facts-list\">\n      <div v-for=\"(fact, i) in facts\" :key=\"i\" class=\"fact-card\">\n        <span class=\"fact-num\">{{ String(i + 1).padStart(2, '0') }}</span>\n        <div class=\"fact-body\">\n          <h3>{{ fact.title }}</h3>\n          <p>{{ fact.text }}</p>\n        </div>\n      </div>\n    </div>\n  </div>\n</template>\n\n<script setup lang=\"ts\">\nconst facts = [\n  { title: 'Giant Teeth', text: 'Beaver teeth are orange because they contain iron, which makes them incredibly strong. They never stop growing, so beavers must gnaw constantly to keep them trimmed.' },\n  { title: 'Underwater Architects', text: 'Beavers can hold their breath for up to 15 minutes. They have transparent eyelids that act as goggles, letting them see perfectly underwater.' },",
+    "token_count": 235
+  },
+  {
+    "id": 170,
+    "file": "src/views/FactsView.vue",
+    "language": "vue",
+    "line_start": 16,
+    "line_end": 35,
+    "text": "\n<script setup lang=\"ts\">\nconst facts = [\n  { title: 'Giant Teeth', text: 'Beaver teeth are orange because they contain iron, which makes them incredibly strong. They never stop growing, so beavers must gnaw constantly to keep them trimmed.' },\n  { title: 'Underwater Architects', text: 'Beavers can hold their breath for up to 15 minutes. They have transparent eyelids that act as goggles, letting them see perfectly underwater.' },\n  { title: 'Record-Breaking Dams', text: 'The longest beaver dam ever discovered is 850 meters long, located in northern Alberta, Canada. It is visible from space.' },\n  { title: 'Ecosystem Engineers', text: 'Beaver ponds increase biodiversity by 33 percent. Their dams create wetlands that support fish, birds, amphibians, and countless plant species.' },\n  { title: 'Tail Communication', text: 'When a beaver slaps its tail on water, the sound can be heard over half a kilometer away. It warns the entire colony of danger instantly.' },\n  { title: 'Family-Oriented', text: 'Beaver families typically include parents and two generations of offspring. Young beavers stay with their parents for about two years, learning construction skills.' },\n  { title: 'Night Owls', text: 'Beavers are primarily nocturnal. They are most active between sunset and sunrise, spending the night building, foraging, and maintaining their dams.' },\n  { title: 'Historical Impact', text: 'The beaver fur trade shaped North American history for over 200 years. Beaver pelts were once used as currency and drove European exploration of the continent.' },\n]\n</script>\n\n<style scoped>\n.facts-page { padding: 3rem 2.5rem; max-width: 800px; margin: 0 auto; }\n.page-title {\n  font-size: 2.4rem; font-weight: 800;\n  background: linear-gradient(135deg, #8B6914, #D4A030, #F0C050);\n  -webkit-background-clip: text; -webkit-text-fill-color: transparent;",
+    "token_count": 464
+  },
+  {
+    "id": 171,
+    "file": "src/views/FactsView.vue",
+    "language": "vue",
+    "line_start": 31,
+    "line_end": 50,
+    "text": ".facts-page { padding: 3rem 2.5rem; max-width: 800px; margin: 0 auto; }\n.page-title {\n  font-size: 2.4rem; font-weight: 800;\n  background: linear-gradient(135deg, #8B6914, #D4A030, #F0C050);\n  -webkit-background-clip: text; -webkit-text-fill-color: transparent;\n  margin-bottom: 0.4rem;\n}\n.page-sub { color: rgba(255,255,255,0.45); font-size: 1.05rem; margin-bottom: 2.5rem; }\n.facts-list { display: flex; flex-direction: column; gap: 1rem; }\n.fact-card {\n  display: flex; gap: 1.25rem; padding: 1.5rem;\n  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);\n  border-radius: 14px; transition: all 0.2s ease;\n}\n.fact-card:hover { border-color: rgba(212,160,48,0.15); background: rgba(139,105,20,0.06); }\n.fact-num { font-size: 1.8rem; font-weight: 800; color: rgba(212,160,48,0.25); min-width: 48px; line-height: 1; padding-top: 4px; }\n.fact-body h3 { font-size: 1.1rem; color: #D4A030; margin-bottom: 0.4rem; }\n.fact-body p { font-size: 0.92rem; color: rgba(255,255,255,0.6); line-height: 1.55; }\n\n@media (max-width: 768px) {",
+    "token_count": 263
+  },
+  {
+    "id": 172,
+    "file": "src/views/FactsView.vue",
+    "language": "vue",
+    "line_start": 46,
+    "line_end": 60,
+    "text": ".fact-num { font-size: 1.8rem; font-weight: 800; color: rgba(212,160,48,0.25); min-width: 48px; line-height: 1; padding-top: 4px; }\n.fact-body h3 { font-size: 1.1rem; color: #D4A030; margin-bottom: 0.4rem; }\n.fact-body p { font-size: 0.92rem; color: rgba(255,255,255,0.6); line-height: 1.55; }\n\n@media (max-width: 768px) {\n  .facts-page { padding: 4.5rem 1rem 2rem; }\n  .page-title { font-size: 1.6rem; }\n  .page-sub { font-size: 0.9rem; margin-bottom: 1.5rem; }\n  .fact-card { padding: 1rem; gap: 0.75rem; }\n  .fact-num { font-size: 1.3rem; min-width: 36px; }\n  .fact-body h3 { font-size: 0.95rem; }\n  .fact-body p { font-size: 0.85rem; }\n}\n</style>\n",
+    "token_count": 163
+  },
+  {
+    "id": 173,
+    "file": "src/views/GalleryView.vue",
+    "language": "vue",
+    "line_start": 1,
+    "line_end": 20,
+    "text": "<template>\n  <div class=\"gallery-page\">\n    <h1 class=\"page-title\">Beaver Gallery</h1>\n    <p class=\"page-sub\">A collection of beaver scenes from around the world</p>\n    <div class=\"gallery-grid\">\n      <div v-for=\"(item, i) in galleryItems\" :key=\"i\" class=\"gallery-card\">\n        <div class=\"gallery-thumb\">\n          <img :src=\"item.img\" :alt=\"item.title\" class=\"gallery-img\" />\n        </div>\n        <div class=\"gallery-info\">\n          <h3>{{ item.title }}</h3>\n          <p>{{ item.desc }}</p>\n        </div>\n      </div>\n    </div>\n  </div>\n</template>\n\n<script setup lang=\"ts\">\nimport damBuilder from '@/assets/gallery/dam-builder.jpg'",
+    "token_count": 161
+  },
+  {
+    "id": 174,
+    "file": "src/views/GalleryView.vue",
+    "language": "vue",
+    "line_start": 16,
+    "line_end": 35,
+    "text": "  </div>\n</template>\n\n<script setup lang=\"ts\">\nimport damBuilder from '@/assets/gallery/dam-builder.jpg'\nimport riverSwimmer from '@/assets/gallery/river-swimmer.jpg'\nimport barkFeast from '@/assets/gallery/bark-feast.jpg'\nimport lodge from '@/assets/gallery/lodge.jpg'\nimport winterBeaver from '@/assets/gallery/winter-beaver.jpg'\nimport beaverDusk from '@/assets/gallery/beaver-dusk.jpg'\n\nconst galleryItems = [\n  { img: damBuilder, title: 'Dam Builder', desc: 'A beaver dam constructed from branches, mud and natural debris' },\n  { img: riverSwimmer, title: 'River Swimmer', desc: 'An American beaver gliding through calm waters' },\n  { img: barkFeast, title: 'Bark Feast', desc: 'A beaver enjoying a meal of fresh bark and branches' },\n  { img: lodge, title: 'Beaver Lodge', desc: 'The cozy beaver home made of sticks, mud and grass' },\n  { img: winterBeaver, title: 'Tree Cutter', desc: 'A beaver hard at work cutting down a tree with its powerful teeth' },\n  { img: beaverDusk, title: 'Beaver Family', desc: 'A family of beavers near their creek habitat' },\n]\n</script>",
+    "token_count": 269
+  },
+  {
+    "id": 175,
+    "file": "src/views/GalleryView.vue",
+    "language": "vue",
+    "line_start": 31,
+    "line_end": 50,
+    "text": "  { img: lodge, title: 'Beaver Lodge', desc: 'The cozy beaver home made of sticks, mud and grass' },\n  { img: winterBeaver, title: 'Tree Cutter', desc: 'A beaver hard at work cutting down a tree with its powerful teeth' },\n  { img: beaverDusk, title: 'Beaver Family', desc: 'A family of beavers near their creek habitat' },\n]\n</script>\n\n<style scoped>\n.gallery-page { padding: 3rem 2.5rem; max-width: 960px; margin: 0 auto; }\n.page-title {\n  font-size: 2.4rem; font-weight: 800;\n  background: linear-gradient(135deg, #8B6914, #D4A030, #F0C050);\n  -webkit-background-clip: text; -webkit-text-fill-color: transparent;\n  margin-bottom: 0.4rem;\n}\n.page-sub { color: rgba(255,255,255,0.45); font-size: 1.05rem; margin-bottom: 2.5rem; }\n.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; }\n.gallery-card {\n  border-radius: 14px; overflow: hidden;\n  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);\n  transition: all 0.25s ease;",
+    "token_count": 252
+  },
+  {
+    "id": 176,
+    "file": "src/views/GalleryView.vue",
+    "language": "vue",
+    "line_start": 46,
+    "line_end": 65,
+    "text": ".gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; }\n.gallery-card {\n  border-radius: 14px; overflow: hidden;\n  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);\n  transition: all 0.25s ease;\n}\n.gallery-card:hover { border-color: rgba(212,160,48,0.2); transform: translateY(-3px); }\n.gallery-thumb { height: 200px; overflow: hidden; }\n.gallery-img { width: 100%; height: 100%; object-fit: cover; }\n.gallery-info { padding: 1rem 1.25rem 1.25rem; }\n.gallery-info h3 { font-size: 1.05rem; color: #D4A030; margin-bottom: 0.3rem; }\n.gallery-info p { font-size: 0.88rem; color: rgba(255,255,255,0.5); line-height: 1.45; }\n\n@media (max-width: 768px) {\n  .gallery-page { padding: 4.5rem 1rem 2rem; }\n  .page-title { font-size: 1.6rem; }\n  .page-sub { font-size: 0.9rem; margin-bottom: 1.5rem; }\n  .gallery-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }\n  .gallery-thumb { height: 140px; }\n  .gallery-info { padding: 0.75rem 1rem; }",
+    "token_count": 254
+  },
+  {
+    "id": 177,
+    "file": "src/views/GalleryView.vue",
+    "language": "vue",
+    "line_start": 61,
+    "line_end": 73,
+    "text": "  .page-title { font-size: 1.6rem; }\n  .page-sub { font-size: 0.9rem; margin-bottom: 1.5rem; }\n  .gallery-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }\n  .gallery-thumb { height: 140px; }\n  .gallery-info { padding: 0.75rem 1rem; }\n  .gallery-info h3 { font-size: 0.92rem; }\n  .gallery-info p { font-size: 0.8rem; }\n}\n@media (max-width: 400px) {\n  .gallery-grid { grid-template-columns: 1fr; }\n}\n</style>\n",
+    "token_count": 104
+  },
+  {
+    "id": 178,
+    "file": "src/views/HabitatView.vue",
+    "language": "vue",
+    "line_start": 1,
+    "line_end": 20,
+    "text": "<template>\n  <div class=\"habitat-page\">\n    <h1 class=\"page-title\">Beaver Habitat</h1>\n    <p class=\"page-sub\">Where beavers live and how they shape their environment</p>\n    <div class=\"habitat-sections\">\n      <section class=\"habitat-card\">\n        <h2>Freshwater Ecosystems</h2>\n        <p>Beavers are found in rivers, streams, ponds, and lakes across North America and Eurasia. They prefer slow-moving water with nearby deciduous trees, especially aspen, willow, birch, and poplar, which provide both food and building material.</p>\n      </section>\n      <section class=\"habitat-card\">\n        <h2>The Lodge</h2>\n        <p>A beaver lodge is an engineering marvel. Built from sticks, mud, and rocks, it sits in the middle of a pond with underwater entrances that protect against predators. Inside, the living chamber stays above water level and is insulated enough to maintain warmth even in harsh winters.</p>\n      </section>\n      <section class=\"habitat-card\">\n        <h2>The Dam</h2>\n        <p>Beavers build dams to create deep ponds around their lodge. The sound of running water triggers their building instinct. A typical dam is 1.5 meters high and 4.5 meters wide, though some exceed hundreds of meters in length.</p>\n      </section>\n      <section class=\"habitat-card\">\n        <h2>Canals</h2>\n        <p>Beavers dig canals up to a meter wide to float food and building materials to their lodge. These waterways can extend hundreds of meters into the forest, allowing safe transport of heavy logs.</p>",
+    "token_count": 380
+  },
+  {
+    "id": 179,
+    "file": "src/views/HabitatView.vue",
+    "language": "vue",
+    "line_start": 16,
+    "line_end": 35,
+    "text": "        <p>Beavers build dams to create deep ponds around their lodge. The sound of running water triggers their building instinct. A typical dam is 1.5 meters high and 4.5 meters wide, though some exceed hundreds of meters in length.</p>\n      </section>\n      <section class=\"habitat-card\">\n        <h2>Canals</h2>\n        <p>Beavers dig canals up to a meter wide to float food and building materials to their lodge. These waterways can extend hundreds of meters into the forest, allowing safe transport of heavy logs.</p>\n      </section>\n      <section class=\"habitat-card\">\n        <h2>Geographic Range</h2>\n        <p>North American beavers range from Alaska to northern Mexico. Eurasian beavers are found across Europe and Asia, from the UK to Mongolia. Both species have been successfully reintroduced to many areas where they were previously hunted to extinction.</p>\n      </section>\n    </div>\n  </div>\n</template>\n\n<script setup lang=\"ts\">\n</script>\n\n<style scoped>\n.habitat-page { padding: 3rem 2.5rem; max-width: 800px; margin: 0 auto; }\n.page-title {",
+    "token_count": 267
+  },
+  {
+    "id": 180,
+    "file": "src/views/HabitatView.vue",
+    "language": "vue",
+    "line_start": 31,
+    "line_end": 50,
+    "text": "</script>\n\n<style scoped>\n.habitat-page { padding: 3rem 2.5rem; max-width: 800px; margin: 0 auto; }\n.page-title {\n  font-size: 2.4rem; font-weight: 800;\n  background: linear-gradient(135deg, #8B6914, #D4A030, #F0C050);\n  -webkit-background-clip: text; -webkit-text-fill-color: transparent;\n  margin-bottom: 0.4rem;\n}\n.page-sub { color: rgba(255,255,255,0.45); font-size: 1.05rem; margin-bottom: 2.5rem; }\n.habitat-sections { display: flex; flex-direction: column; gap: 1.25rem; }\n.habitat-card {\n  padding: 1.75rem;\n  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);\n  border-radius: 14px; transition: all 0.2s ease;\n}\n.habitat-card:hover { border-color: rgba(212,160,48,0.15); }\n.habitat-card h2 { font-size: 1.2rem; color: #D4A030; margin-bottom: 0.6rem; }\n.habitat-card p { font-size: 0.95rem; color: rgba(255,255,255,0.6); line-height: 1.65; }",
+    "token_count": 219
+  },
+  {
+    "id": 181,
+    "file": "src/views/HabitatView.vue",
+    "language": "vue",
+    "line_start": 46,
+    "line_end": 61,
+    "text": "  border-radius: 14px; transition: all 0.2s ease;\n}\n.habitat-card:hover { border-color: rgba(212,160,48,0.15); }\n.habitat-card h2 { font-size: 1.2rem; color: #D4A030; margin-bottom: 0.6rem; }\n.habitat-card p { font-size: 0.95rem; color: rgba(255,255,255,0.6); line-height: 1.65; }\n\n@media (max-width: 768px) {\n  .habitat-page { padding: 4.5rem 1rem 2rem; }\n  .page-title { font-size: 1.6rem; }\n  .page-sub { font-size: 0.9rem; margin-bottom: 1.5rem; }\n  .habitat-card { padding: 1.25rem; }\n  .habitat-card h2 { font-size: 1.05rem; }\n  .habitat-card p { font-size: 0.88rem; }\n}\n</style>\n",
+    "token_count": 147
+  },
+  {
+    "id": 182,
+    "file": "src/views/HomeView.vue",
+    "language": "vue",
+    "line_start": 1,
+    "line_end": 20,
+    "text": "<template>\n  <div class=\"home\">\n    <div class=\"hero\">\n      <h1 class=\"hero-title\">Welcome to Bobr</h1>\n      <p class=\"hero-sub\">Your guide to the fascinating world of beavers</p>\n    </div>\n    <div class=\"cards\">\n      <RouterLink to=\"/bobr\" class=\"card\">\n        <div class=\"card-icon\"><img src=\"@/assets/icons/bobr.svg\" alt=\"Beaver\" /></div>\n        <h3>Meet the Bobr</h3>\n        <p>See a real beaver up close</p>\n      </RouterLink>\n      <RouterLink to=\"/gallery\" class=\"card\">\n        <div class=\"card-icon\"><img src=\"@/assets/icons/gallery.svg\" alt=\"Gallery\" /></div>\n        <h3>Gallery</h3>\n        <p>Beautiful beaver scenes</p>\n      </RouterLink>\n      <RouterLink to=\"/video\" class=\"card\">\n        <div class=\"card-icon\"><img src=\"@/assets/icons/video.svg\" alt=\"Video\" /></div>\n        <h3>Video</h3>",
+    "token_count": 205
+  },
+  {
+    "id": 183,
+    "file": "src/views/HomeView.vue",
+    "language": "vue",
+    "line_start": 16,
+    "line_end": 35,
+    "text": "        <p>Beautiful beaver scenes</p>\n      </RouterLink>\n      <RouterLink to=\"/video\" class=\"card\">\n        <div class=\"card-icon\"><img src=\"@/assets/icons/video.svg\" alt=\"Video\" /></div>\n        <h3>Video</h3>\n        <p>Watch beaver documentaries</p>\n      </RouterLink>\n      <RouterLink to=\"/facts\" class=\"card\">\n        <div class=\"card-icon\"><img src=\"@/assets/icons/facts.svg\" alt=\"Fun Facts\" /></div>\n        <h3>Fun Facts</h3>\n        <p>Surprising beaver trivia</p>\n      </RouterLink>\n      <RouterLink to=\"/habitat\" class=\"card\">\n        <div class=\"card-icon\"><img src=\"@/assets/icons/habitat.svg\" alt=\"Habitat\" /></div>\n        <h3>Habitat</h3>\n        <p>Where beavers live</p>\n      </RouterLink>\n      <RouterLink to=\"/species\" class=\"card\">\n        <div class=\"card-icon\"><img src=\"@/assets/icons/species.svg\" alt=\"Species\" /></div>\n        <h3>Species</h3>",
+    "token_count": 220
+  },
+  {
+    "id": 184,
+    "file": "src/views/HomeView.vue",
+    "language": "vue",
+    "line_start": 31,
+    "line_end": 50,
+    "text": "        <p>Where beavers live</p>\n      </RouterLink>\n      <RouterLink to=\"/species\" class=\"card\">\n        <div class=\"card-icon\"><img src=\"@/assets/icons/species.svg\" alt=\"Species\" /></div>\n        <h3>Species</h3>\n        <p>Types of beavers worldwide</p>\n      </RouterLink>\n    </div>\n  </div>\n</template>\n\n<script setup lang=\"ts\">\nimport { RouterLink } from 'vue-router'\n</script>\n\n<style scoped>\n.home {\n  padding: 3rem 2.5rem;\n}\n",
+    "token_count": 110
+  },
+  {
+    "id": 185,
+    "file": "src/views/HomeView.vue",
+    "language": "vue",
+    "line_start": 46,
+    "line_end": 65,
+    "text": "<style scoped>\n.home {\n  padding: 3rem 2.5rem;\n}\n\n.hero {\n  text-align: center;\n  margin-bottom: 3rem;\n}\n\n.hero-title {\n  font-size: 2.8rem;\n  font-weight: 800;\n  background: linear-gradient(135deg, #8B6914, #D4A030, #F0C050);\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n  margin-bottom: 0.5rem;\n}\n\n.hero-sub {",
+    "token_count": 85
+  },
+  {
+    "id": 186,
+    "file": "src/views/HomeView.vue",
+    "language": "vue",
+    "line_start": 61,
+    "line_end": 80,
+    "text": "  -webkit-text-fill-color: transparent;\n  margin-bottom: 0.5rem;\n}\n\n.hero-sub {\n  font-size: 1.15rem;\n  color: rgba(255,255,255,0.5);\n}\n\n.cards {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));\n  gap: 1.25rem;\n  max-width: 900px;\n  margin: 0 auto;\n}\n\n.card {\n  display: flex;\n  flex-direction: column;",
+    "token_count": 84
+  },
+  {
+    "id": 187,
+    "file": "src/views/HomeView.vue",
+    "language": "vue",
+    "line_start": 76,
+    "line_end": 95,
+    "text": "}\n\n.card {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  text-align: center;\n  padding: 1.25rem 1rem 1rem;\n  background: rgba(255,255,255,0.03);\n  border: 1px solid rgba(255,255,255,0.06);\n  border-radius: 14px;\n  text-decoration: none;\n  color: rgba(255,255,255,0.8);\n  transition: all 0.25s ease;\n}\n\n.card:hover {\n  background: rgba(139,105,20,0.1);\n  border-color: rgba(212,160,48,0.2);\n  transform: translateY(-4px);",
+    "token_count": 111
+  },
+  {
+    "id": 188,
+    "file": "src/views/HomeView.vue",
+    "language": "vue",
+    "line_start": 91,
+    "line_end": 110,
+    "text": "\n.card:hover {\n  background: rgba(139,105,20,0.1);\n  border-color: rgba(212,160,48,0.2);\n  transform: translateY(-4px);\n}\n\n.card:hover .card-icon {\n  transform: scale(1.08);\n}\n\n.card-icon {\n  width: 96px;\n  height: 96px;\n  margin-bottom: 0.75rem;\n  transition: transform 0.25s ease;\n}\n\n.card-icon img {\n  width: 100%;",
+    "token_count": 80
+  },
+  {
+    "id": 189,
+    "file": "src/views/HomeView.vue",
+    "language": "vue",
+    "line_start": 106,
+    "line_end": 125,
+    "text": "  transition: transform 0.25s ease;\n}\n\n.card-icon img {\n  width: 100%;\n  height: 100%;\n  border-radius: 12px;\n}\n\n.card h3 {\n  font-size: 1.1rem;\n  color: #D4A030;\n  margin: 0 0 0.4rem;\n}\n\n.card p {\n  font-size: 0.85rem;\n  color: rgba(255,255,255,0.45);\n}\n",
+    "token_count": 64
+  },
+  {
+    "id": 190,
+    "file": "src/views/HomeView.vue",
+    "language": "vue",
+    "line_start": 121,
+    "line_end": 140,
+    "text": ".card p {\n  font-size: 0.85rem;\n  color: rgba(255,255,255,0.45);\n}\n\n/* ===== Mobile ===== */\n@media (max-width: 768px) {\n  .home {\n    padding: 4.5rem 1.25rem 2rem;\n  }\n\n  .hero-title {\n    font-size: 1.8rem;\n  }\n\n  .hero-sub {\n    font-size: 0.95rem;\n  }\n\n  .hero {",
+    "token_count": 67
+  },
+  {
+    "id": 191,
+    "file": "src/views/HomeView.vue",
+    "language": "vue",
+    "line_start": 136,
+    "line_end": 155,
+    "text": "  .hero-sub {\n    font-size: 0.95rem;\n  }\n\n  .hero {\n    margin-bottom: 2rem;\n  }\n\n  .cards {\n    grid-template-columns: 1fr 1fr;\n    gap: 0.75rem;\n  }\n\n  .card-icon {\n    width: 72px;\n    height: 72px;\n  }\n\n  .card h3 {\n    font-size: 0.95rem;",
+    "token_count": 61
+  },
+  {
+    "id": 192,
+    "file": "src/views/HomeView.vue",
+    "language": "vue",
+    "line_start": 151,
+    "line_end": 165,
+    "text": "    height: 72px;\n  }\n\n  .card h3 {\n    font-size: 0.95rem;\n  }\n}\n\n@media (max-width: 400px) {\n  .cards {\n    grid-template-columns: 1fr;\n  }\n}\n</style>\n",
+    "token_count": 39
+  },
+  {
+    "id": 193,
+    "file": "src/views/SpeciesView.vue",
+    "language": "vue",
+    "line_start": 1,
+    "line_end": 20,
+    "text": "<template>\n  <div class=\"species-page\">\n    <h1 class=\"page-title\">Beaver Species</h1>\n    <p class=\"page-sub\">Meet the two living species of the genus Castor</p>\n    <div class=\"species-cards\">\n      <div class=\"species-card\">\n        <div class=\"species-header\">\n          <h2>North American Beaver</h2>\n          <span class=\"species-latin\">Castor canadensis</span>\n        </div>\n        <div class=\"species-stats\">\n          <div class=\"stat\"><span class=\"stat-label\">Weight</span><span class=\"stat-val\">11 - 32 kg</span></div>\n          <div class=\"stat\"><span class=\"stat-label\">Length</span><span class=\"stat-val\">74 - 90 cm</span></div>\n          <div class=\"stat\"><span class=\"stat-label\">Tail</span><span class=\"stat-val\">20 - 35 cm</span></div>\n          <div class=\"stat\"><span class=\"stat-label\">Lifespan</span><span class=\"stat-val\">10 - 15 years</span></div>\n          <div class=\"stat\"><span class=\"stat-label\">Population</span><span class=\"stat-val\">~15 million</span></div>\n          <div class=\"stat\"><span class=\"stat-label\">Status</span><span class=\"stat-val status-lc\">Least Concern</span></div>\n        </div>\n        <p class=\"species-desc\">The larger of the two species. Found throughout Canada, the United States, and parts of northern Mexico. Once numbering over 100 million before the fur trade reduced their population to near extinction.</p>\n      </div>",
+    "token_count": 347
+  },
+  {
+    "id": 194,
+    "file": "src/views/SpeciesView.vue",
+    "language": "vue",
+    "line_start": 16,
+    "line_end": 35,
+    "text": "          <div class=\"stat\"><span class=\"stat-label\">Population</span><span class=\"stat-val\">~15 million</span></div>\n          <div class=\"stat\"><span class=\"stat-label\">Status</span><span class=\"stat-val status-lc\">Least Concern</span></div>\n        </div>\n        <p class=\"species-desc\">The larger of the two species. Found throughout Canada, the United States, and parts of northern Mexico. Once numbering over 100 million before the fur trade reduced their population to near extinction.</p>\n      </div>\n      <div class=\"species-card\">\n        <div class=\"species-header\">\n          <h2>Eurasian Beaver</h2>\n          <span class=\"species-latin\">Castor fiber</span>\n        </div>\n        <div class=\"species-stats\">\n          <div class=\"stat\"><span class=\"stat-label\">Weight</span><span class=\"stat-val\">11 - 30 kg</span></div>\n          <div class=\"stat\"><span class=\"stat-label\">Length</span><span class=\"stat-val\">73 - 100 cm</span></div>\n          <div class=\"stat\"><span class=\"stat-label\">Tail</span><span class=\"stat-val\">25 - 37 cm</span></div>\n          <div class=\"stat\"><span class=\"stat-label\">Lifespan</span><span class=\"stat-val\">7 - 8 years</span></div>\n          <div class=\"stat\"><span class=\"stat-label\">Population</span><span class=\"stat-val\">~1.2 million</span></div>\n          <div class=\"stat\"><span class=\"stat-label\">Status</span><span class=\"stat-val status-lc\">Least Concern</span></div>\n        </div>\n        <p class=\"species-desc\">Native to Europe and Asia. Nearly hunted to extinction by the early 20th century. Reintroduction programs across Europe have been tremendously successful.</p>\n      </div>",
+    "token_count": 411
+  },
+  {
+    "id": 195,
+    "file": "src/views/SpeciesView.vue",
+    "language": "vue",
+    "line_start": 31,
+    "line_end": 50,
+    "text": "          <div class=\"stat\"><span class=\"stat-label\">Population</span><span class=\"stat-val\">~1.2 million</span></div>\n          <div class=\"stat\"><span class=\"stat-label\">Status</span><span class=\"stat-val status-lc\">Least Concern</span></div>\n        </div>\n        <p class=\"species-desc\">Native to Europe and Asia. Nearly hunted to extinction by the early 20th century. Reintroduction programs across Europe have been tremendously successful.</p>\n      </div>\n    </div>\n    <div class=\"comparison\">\n      <h2>Key Differences</h2>\n      <div class=\"comp-table-wrap\">\n        <table class=\"comp-table\">\n          <thead>\n            <tr><th>Feature</th><th>North American</th><th>Eurasian</th></tr>\n          </thead>\n          <tbody>\n            <tr><td>Skull shape</td><td>Wider, shorter</td><td>Narrower, longer</td></tr>\n            <tr><td>Tail shape</td><td>Wider, more oval</td><td>Narrower, elongated</td></tr>\n            <tr><td>Nasal bones</td><td>Triangular</td><td>Square</td></tr>\n            <tr><td>Chromosomes</td><td>40</td><td>48</td></tr>\n            <tr><td>Dam building</td><td>Very common</td><td>Less frequent</td></tr>\n          </tbody>",
+    "token_count": 292
+  },
+  {
+    "id": 196,
+    "file": "src/views/SpeciesView.vue",
+    "language": "vue",
+    "line_start": 46,
+    "line_end": 65,
+    "text": "            <tr><td>Tail shape</td><td>Wider, more oval</td><td>Narrower, elongated</td></tr>\n            <tr><td>Nasal bones</td><td>Triangular</td><td>Square</td></tr>\n            <tr><td>Chromosomes</td><td>40</td><td>48</td></tr>\n            <tr><td>Dam building</td><td>Very common</td><td>Less frequent</td></tr>\n          </tbody>\n        </table>\n      </div>\n    </div>\n  </div>\n</template>\n\n<script setup lang=\"ts\">\n</script>\n\n<style scoped>\n.species-page { padding: 3rem 2.5rem; max-width: 860px; margin: 0 auto; }\n.page-title {\n  font-size: 2.4rem; font-weight: 800;\n  background: linear-gradient(135deg, #8B6914, #D4A030, #F0C050);\n  -webkit-background-clip: text; -webkit-text-fill-color: transparent;",
+    "token_count": 179
+  },
+  {
+    "id": 197,
+    "file": "src/views/SpeciesView.vue",
+    "language": "vue",
+    "line_start": 61,
+    "line_end": 80,
+    "text": ".species-page { padding: 3rem 2.5rem; max-width: 860px; margin: 0 auto; }\n.page-title {\n  font-size: 2.4rem; font-weight: 800;\n  background: linear-gradient(135deg, #8B6914, #D4A030, #F0C050);\n  -webkit-background-clip: text; -webkit-text-fill-color: transparent;\n  margin-bottom: 0.4rem;\n}\n.page-sub { color: rgba(255,255,255,0.45); font-size: 1.05rem; margin-bottom: 2.5rem; }\n.species-cards { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2.5rem; }\n.species-card {\n  padding: 2rem; background: rgba(255,255,255,0.03);\n  border: 1px solid rgba(255,255,255,0.06); border-radius: 14px;\n}\n.species-header { margin-bottom: 1.25rem; }\n.species-header h2 { font-size: 1.4rem; color: #D4A030; margin-bottom: 0.2rem; }\n.species-latin { font-size: 0.9rem; color: rgba(255,255,255,0.35); font-style: italic; }\n.species-stats {\n  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1.25rem;\n}\n.stat {",
+    "token_count": 236
+  },
+  {
+    "id": 198,
+    "file": "src/views/SpeciesView.vue",
+    "language": "vue",
+    "line_start": 76,
+    "line_end": 95,
+    "text": ".species-latin { font-size: 0.9rem; color: rgba(255,255,255,0.35); font-style: italic; }\n.species-stats {\n  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1.25rem;\n}\n.stat {\n  display: flex; flex-direction: column; gap: 0.2rem;\n  padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.02);\n  border-radius: 8px; border: 1px solid rgba(255,255,255,0.04);\n}\n.stat-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.35); }\n.stat-val { font-size: 0.95rem; color: rgba(255,255,255,0.8); font-weight: 600; }\n.status-lc { color: #4ade80; }\n.species-desc { font-size: 0.92rem; color: rgba(255,255,255,0.55); line-height: 1.6; }\n.comparison {\n  padding: 2rem; background: rgba(255,255,255,0.03);\n  border: 1px solid rgba(255,255,255,0.06); border-radius: 14px;\n}\n.comparison h2 { font-size: 1.3rem; color: #D4A030; margin-bottom: 1.25rem; }\n.comp-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }\n.comp-table { width: 100%; border-collapse: collapse; min-width: 400px; }",
+    "token_count": 268
+  },
+  {
+    "id": 199,
+    "file": "src/views/SpeciesView.vue",
+    "language": "vue",
+    "line_start": 91,
+    "line_end": 110,
+    "text": "  border: 1px solid rgba(255,255,255,0.06); border-radius: 14px;\n}\n.comparison h2 { font-size: 1.3rem; color: #D4A030; margin-bottom: 1.25rem; }\n.comp-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }\n.comp-table { width: 100%; border-collapse: collapse; min-width: 400px; }\n.comp-table th {\n  text-align: left; padding: 0.7rem 1rem; font-size: 0.82rem;\n  text-transform: uppercase; letter-spacing: 0.04em; color: rgba(255,255,255,0.4);\n  border-bottom: 1px solid rgba(255,255,255,0.08);\n}\n.comp-table td {\n  padding: 0.65rem 1rem; font-size: 0.92rem; color: rgba(255,255,255,0.65);\n  border-bottom: 1px solid rgba(255,255,255,0.04);\n}\n.comp-table tr:last-child td { border-bottom: none; }\n\n@media (max-width: 768px) {\n  .species-page { padding: 4.5rem 1rem 2rem; }\n  .page-title { font-size: 1.6rem; }\n  .page-sub { font-size: 0.9rem; margin-bottom: 1.5rem; }",
+    "token_count": 220
+  },
+  {
+    "id": 200,
+    "file": "src/views/SpeciesView.vue",
+    "language": "vue",
+    "line_start": 106,
+    "line_end": 122,
+    "text": "\n@media (max-width: 768px) {\n  .species-page { padding: 4.5rem 1rem 2rem; }\n  .page-title { font-size: 1.6rem; }\n  .page-sub { font-size: 0.9rem; margin-bottom: 1.5rem; }\n  .species-card { padding: 1.25rem; }\n  .species-header h2 { font-size: 1.15rem; }\n  .species-stats { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }\n  .stat { padding: 0.5rem 0.6rem; }\n  .stat-val { font-size: 0.85rem; }\n  .species-desc { font-size: 0.85rem; }\n  .comparison { padding: 1.25rem; }\n  .comparison h2 { font-size: 1.1rem; }\n  .comp-table th, .comp-table td { padding: 0.5rem 0.6rem; font-size: 0.82rem; }\n}\n</style>\n",
+    "token_count": 152
+  },
+  {
+    "id": 201,
+    "file": "src/views/SpeciesView.vue",
+    "language": "vue",
+    "line_start": 121,
+    "line_end": 122,
+    "text": "</style>\n",
+    "token_count": 3
+  },
+  {
+    "id": 202,
+    "file": "src/views/VideoView.vue",
+    "language": "vue",
+    "line_start": 1,
+    "line_end": 20,
+    "text": "<template>\n  <div class=\"video-page\">\n    <h1 class=\"video-title\">Beaver Videos</h1>\n    <p class=\"video-subtitle\">Watch amazing beaver footage from around the world</p>\n    <div class=\"video-grid\">\n      <div class=\"video-card\" v-for=\"video in videos\" :key=\"video.id\">\n        <div class=\"video-wrapper\">\n          <iframe\n            :src=\"`https://www.youtube.com/embed/${video.id}`\"\n            :title=\"video.title\"\n            frameborder=\"0\"\n            allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\"\n            allowfullscreen\n          ></iframe>\n        </div>\n        <div class=\"video-info\">\n          <h3>{{ video.title }}</h3>\n          <p>{{ video.description }}</p>\n        </div>\n      </div>",
+    "token_count": 193
+  },
+  {
+    "id": 203,
+    "file": "src/views/VideoView.vue",
+    "language": "vue",
+    "line_start": 16,
+    "line_end": 35,
+    "text": "        <div class=\"video-info\">\n          <h3>{{ video.title }}</h3>\n          <p>{{ video.description }}</p>\n        </div>\n      </div>\n    </div>\n  </div>\n</template>\n\n<script setup lang=\"ts\">\nconst videos = [\n  {\n    id: \"iyNA62FrKCE\",\n    title: \"Beavers: The Master Builders\",\n    description: \"See how beavers construct elaborate dams and lodges, transforming entire landscapes with their engineering skills.\"\n  },\n  {\n    id: \"eAPqQFWEoKg\",\n    title: \"Busy Beavers Build Dam Ahead of Winter\",\n    description: \"Watch beavers race against time to build their dam before winter arrives in Yellowstone.\"",
+    "token_count": 153
+  },
+  {
+    "id": 204,
+    "file": "src/views/VideoView.vue",
+    "language": "vue",
+    "line_start": 31,
+    "line_end": 50,
+    "text": "  },\n  {\n    id: \"eAPqQFWEoKg\",\n    title: \"Busy Beavers Build Dam Ahead of Winter\",\n    description: \"Watch beavers race against time to build their dam before winter arrives in Yellowstone.\"\n  },\n  {\n    id: \"CfEglOVi8k8\",\n    title: \"How Beavers Evolved to Build Dams\",\n    description: \"The evolutionary story behind one of nature's most impressive engineering behaviors.\"\n  },\n  {\n    id: \"LtARQMyNDeA\",\n    title: \"Beaver Fells Tree in Just a Few Hours\",\n    description: \"Incredible footage of a beaver taking down a full-sized tree using only its teeth.\"\n  },\n  {\n    id: \"PLyBZ1mdg2c\",\n    title: \"The Beaver: Ecosystem Engineer\",\n    description: \"Discover why scientists call beavers ecosystem engineers and how their work benefits hundreds of other species.\"",
+    "token_count": 193
+  },
+  {
+    "id": 205,
+    "file": "src/views/VideoView.vue",
+    "language": "vue",
+    "line_start": 46,
+    "line_end": 65,
+    "text": "  },\n  {\n    id: \"PLyBZ1mdg2c\",\n    title: \"The Beaver: Ecosystem Engineer\",\n    description: \"Discover why scientists call beavers ecosystem engineers and how their work benefits hundreds of other species.\"\n  }\n]\n</script>\n\n<style scoped>\n.video-page {\n  max-width: 900px;\n  margin: 0 auto;\n  padding: 2rem 1.5rem;\n}\n\n.video-title {\n  font-size: 2.2rem;\n  font-weight: 800;\n  background: linear-gradient(135deg, #8B6914, #D4A030, #F0C040);",
+    "token_count": 110
+  },
+  {
+    "id": 206,
+    "file": "src/views/VideoView.vue",
+    "language": "vue",
+    "line_start": 61,
+    "line_end": 80,
+    "text": "\n.video-title {\n  font-size: 2.2rem;\n  font-weight: 800;\n  background: linear-gradient(135deg, #8B6914, #D4A030, #F0C040);\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n  margin-bottom: 0.5rem;\n}\n\n.video-subtitle {\n  color: rgba(255,255,255,0.5);\n  font-size: 1.05rem;\n  margin-bottom: 2rem;\n}\n\n.video-grid {\n  display: flex;\n  flex-direction: column;\n  gap: 2rem;",
+    "token_count": 98
+  },
+  {
+    "id": 207,
+    "file": "src/views/VideoView.vue",
+    "language": "vue",
+    "line_start": 76,
+    "line_end": 95,
+    "text": "\n.video-grid {\n  display: flex;\n  flex-direction: column;\n  gap: 2rem;\n}\n\n.video-card {\n  background: rgba(30, 26, 40, 0.7);\n  backdrop-filter: blur(8px);\n  border: 1px solid rgba(255,255,255,0.06);\n  border-radius: 14px;\n  overflow: hidden;\n  transition: transform 0.2s ease, border-color 0.2s ease;\n}\n\n.video-card:hover {\n  transform: translateY(-2px);\n  border-color: rgba(212,160,48,0.25);\n}",
+    "token_count": 99
+  },
+  {
+    "id": 208,
+    "file": "src/views/VideoView.vue",
+    "language": "vue",
+    "line_start": 91,
+    "line_end": 110,
+    "text": "\n.video-card:hover {\n  transform: translateY(-2px);\n  border-color: rgba(212,160,48,0.25);\n}\n\n.video-wrapper {\n  position: relative;\n  width: 100%;\n  padding-bottom: 56.25%; /* 16:9 */\n  background: #000;\n}\n\n.video-wrapper iframe {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n}",
+    "token_count": 77
+  },
+  {
+    "id": 209,
+    "file": "src/views/VideoView.vue",
+    "language": "vue",
+    "line_start": 106,
+    "line_end": 125,
+    "text": "  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n}\n\n.video-info {\n  padding: 1.25rem 1.5rem;\n}\n\n.video-info h3 {\n  font-size: 1.15rem;\n  font-weight: 700;\n  color: rgba(255,255,255,0.9);\n  margin-bottom: 0.4rem;\n}\n\n.video-info p {\n  font-size: 0.9rem;\n  color: rgba(255,255,255,0.5);",
+    "token_count": 72
+  },
+  {
+    "id": 210,
+    "file": "src/views/VideoView.vue",
+    "language": "vue",
+    "line_start": 121,
+    "line_end": 140,
+    "text": "}\n\n.video-info p {\n  font-size: 0.9rem;\n  color: rgba(255,255,255,0.5);\n  line-height: 1.5;\n}\n\n@media (max-width: 768px) {\n  .video-page {\n    padding: 1.5rem 1rem;\n  }\n  .video-title {\n    font-size: 1.6rem;\n  }\n  .video-info {\n    padding: 1rem;\n  }\n}\n</style>",
+    "token_count": 66
+  },
+  {
+    "id": 211,
+    "file": "src/views/VideoView.vue",
+    "language": "vue",
+    "line_start": 136,
+    "line_end": 141,
+    "text": "  .video-info {\n    padding: 1rem;\n  }\n}\n</style>\n",
+    "token_count": 13
+  },
+  {
+    "id": 212,
+    "file": "tsconfig.json",
+    "language": "json",
+    "line_start": 1,
+    "line_end": 20,
+    "text": "{\n  \"compilerOptions\": {\n    \"target\": \"ES2020\",\n    \"module\": \"ESNext\",\n    \"moduleResolution\": \"bundler\",\n    \"strict\": true,\n    \"jsx\": \"preserve\",\n    \"resolveJsonModule\": true,\n    \"isolatedModules\": true,\n    \"esModuleInterop\": true,\n    \"lib\": [\n      \"ES2020\",\n      \"DOM\",\n      \"DOM.Iterable\"\n    ],\n    \"skipLibCheck\": true,\n    \"noEmit\": true,\n    \"paths\": {\n      \"@/*\": [\n        \"./src/*\"",
+    "token_count": 101
+  },
+  {
+    "id": 213,
+    "file": "tsconfig.json",
+    "language": "json",
+    "line_start": 16,
+    "line_end": 32,
+    "text": "    \"skipLibCheck\": true,\n    \"noEmit\": true,\n    \"paths\": {\n      \"@/*\": [\n        \"./src/*\"\n      ]\n    },\n    \"baseUrl\": \".\"\n  },\n  \"include\": [\n    \"src/**/*.ts\",\n    \"src/**/*.d.ts\",\n    \"src/**/*.vue\",\n    \"env.d.ts\"\n  ]\n}\n",
+    "token_count": 58
+  },
+  {
+    "id": 214,
+    "file": "tsconfig.json",
+    "language": "json",
+    "line_start": 31,
+    "line_end": 32,
+    "text": "}\n",
+    "token_count": 1
+  },
+  {
+    "id": 215,
+    "file": "vite.config.ts",
+    "language": "typescript",
+    "line_start": 1,
+    "line_end": 13,
+    "text": "import { defineConfig } from 'vite'\nimport vue from '@vitejs/plugin-vue'\nimport { resolve } from 'path'\n\nexport default defineConfig({\n  plugins: [vue()],\n  resolve: {\n    alias: {\n      '@': resolve(__dirname, 'src')\n    }\n  }\n})\n",
+    "token_count": 58
+  }
+]
